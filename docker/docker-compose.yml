@@ -1,17 +1,18 @@
 version: '3.8'
 
 services:
-  fun-zone:
+  faceit_app:
     build: .
     container_name: faceit_app
     env_file:
       - .env
     depends_on:
-      - faceit-db
-    image: ds
+      - faceit_db
+    ports:
+      - "5051:5050"
     restart: unless-stopped
 
-  faceit-db:
+  faceit_db:
     image: mysql:8.0
     container_name: faceit_db
     restart: always
@@ -21,7 +22,7 @@ services:
     ports:
       - "3308:3306"
     volumes:
-      - funzone_db:/var/lib/mysql
+      - faceit-db:/var/lib/mysql
 
   second_phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -30,10 +31,10 @@ services:
     ports:
       - "8082:80"
     environment:
-      PMA_HOST: second_db
+      PMA_HOST: faceit_db
       MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
     depends_on:
-      - second_db
+      - faceit_db
 
   php:
     image: php:8.2-apache
@@ -43,7 +44,7 @@ services:
     volumes:
       - ./faceit_php:/var/www/html
     depends_on:
-      - fun-zone
+      - faceit_app
 
 volumes:
-  funzone_db:
+  faceit-db:
