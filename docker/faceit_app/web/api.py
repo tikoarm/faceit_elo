@@ -5,10 +5,8 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 from cache import api_keys
-from database.reviews import get_all_reviews, get_user_reviews
 from dotenv import dotenv_values, load_dotenv
 from flask import Flask, jsonify, request
-from logic.functions import format_seconds
 
 app_start_time = time.time()
 
