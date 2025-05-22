@@ -34,3 +34,8 @@ def get_location_by_ip(ip: str) -> str:
         logging.warning(f"IP location lookup failed for {ip}: {e}")
 
     return "Unknown"
+
+def json_default_datetime(obj):
+        if isinstance(obj, datetime):
+            return obj.strftime("%Y-%m-%d %H:%M:%S")
+        return str(obj)
