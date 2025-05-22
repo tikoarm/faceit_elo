@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime
+import requests
 
 
 def format_seconds(seconds: int) -> str:
@@ -19,3 +20,17 @@ def format_seconds(seconds: int) -> str:
         parts.append(f"{secs} second{'s' if secs != 1 else ''}")
 
     return ", ".join(parts)
+
+
+def get_location_by_ip(ip: str) -> str:
+    try:
+        response = requests.get(f"https://ipwho.is/{ip}", timeout=3)
+        data = response.json()
+        if data.get("success", False):
+            country = data.get("country", "")
+            city = data.get("city", "")
+            return f"{country}, {city}" if city else country
+    except Exception as e:
+        logging.warning(f"IP location lookup failed for {ip}: {e}")
+
+    return "Unknown"

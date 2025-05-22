@@ -3,11 +3,14 @@ import os
 import time
 from datetime import datetime
 from zoneinfo import ZoneInfo
-
-from cache import api_keys
+from collections import OrderedDict
+from database.subservers import add_subserver_to_db, get_all_subservers_from_db
+from cache import sub_servers
 from dotenv import dotenv_values, load_dotenv
 from flask import Flask, jsonify, request
-from logic.functions import format_seconds
+from logic.functions import format_seconds, get_location_by_ip
+import json
+from flask import Response
 
 app_start_time = time.time()
 
@@ -21,28 +24,95 @@ if not admin_key:
 app = Flask(__name__)
 
 
-@app.route("/apikey/add", methods=["POST"])
-def add_api_key():
+@app.route("/subservers/get/cache", methods=["GET"])
+def get_subservers_cache():
     admkey_param = request.args.get("admin_key")
     if not admkey_param:
         return jsonify({"error": "Admin Key is required"}), 400
 
     adm_key = admkey_param.strip()
     if adm_key != admin_key:
-        error_message = f"Admin Key '{adm_key}' is Invalid!"
-        return jsonify({"error": error_message}), 400
+        return jsonify({"error": f"Admin Key '{adm_key}' is Invalid!"}), 400
 
-    user_param = request.args.get("user_id")
-    if not user_param:
-        return jsonify({"error": "User ID is required"}), 400
+    cache_list = sub_servers.get_cached_subservers()
 
-    try:
-        user_id = int(user_param)
-    except ValueError:
-        return jsonify({"error": "Invalid user ID"}), 400
+    return Response(
+        response=json.dumps({
+            "status": "success",
+            "cached_subservers": cache_list,
+            "count": len(cache_list)
+        }, indent=2),
+        status=200,
+        mimetype="application/json"
+    )
 
-    new_api_key = asyncio.run(api_keys.generate_api_key(user_id))
-    return jsonify({"api_key": new_api_key})
+
+@app.route("/subservers/get/all", methods=["GET"])
+def get_all_subservers():
+    admkey_param = request.args.get("admin_key")
+    if not admkey_param:
+        return jsonify({"error": "Admin Key is required"}), 400
+
+    adm_key = admkey_param.strip()
+    if adm_key != admin_key:
+        return jsonify({"error": f"Admin Key '{adm_key}' is Invalid!"}), 400
+
+    subservers = get_all_subservers_from_db()
+    response_data = OrderedDict([
+        ("status", "success"),
+        ("subserver_count", len(subservers)),
+        ("subservers", subservers)
+    ])
+
+    def json_default(obj):
+        if isinstance(obj, datetime):
+            return obj.strftime("%Y-%m-%d %H:%M:%S")
+        return str(obj)
+
+    return Response(
+        response=json.dumps(response_data, default=json_default),
+        status=200,
+        mimetype="application/json"
+    )
+
+
+@app.route("/subservers/add", methods=["POST"])
+def add_subserver():
+    admkey_param = request.args.get("admin_key")
+    if not admkey_param:
+        return jsonify({"error": "Admin Key is required"}), 400
+
+    adm_key = admkey_param.strip()
+    if adm_key != admin_key:
+        return jsonify({"error": f"Admin Key '{adm_key}' is Invalid!"}), 400
+
+    ip_param = request.args.get("ip")
+    if not ip_param:
+        return jsonify({"error": "Subserver IP is required"}), 400
+    ip = ip_param.strip()
+
+    start_time = time.time()
+    client_ip = request.remote_addr
+
+    api_key = sub_servers.generate_api_key()
+    location = get_location_by_ip(ip)
+    result = add_subserver_to_db(ip, api_key, location)
+
+    response_data = OrderedDict([
+        ("status", "processed"),
+        ("vps_ip", ip),
+        ("vps_api_key", api_key),
+        ("db_result", "done" if result else "failed"),
+        ("request_origin_ip", client_ip),
+        ("response_time_sec", round(time.time() - start_time, 4)),
+        ("vps_ip_location", location)
+    ])
+
+    return Response(
+        response=json.dumps(response_data),
+        status=200,
+        mimetype="application/json"
+    )
 
 
 @app.route("/logs/view", methods=["GET"])
