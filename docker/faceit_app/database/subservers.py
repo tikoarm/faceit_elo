@@ -44,10 +44,11 @@ def add_subserver_to_db(ip: str, api_key: str, location: str):
             ),
         )
         conn.commit()
+        subserver_id = cursor.lastrowid
 
-        subservers_cache_add((ip, api_key))
+        subservers_cache_add((subserver_id, ip, api_key))
         logging.info(
-            f"✅ Subserver with IP {ip} created successfully."
+            f"✅ Subserver with IP {ip} (ID: {subserver_id}) created successfully."
         )
         return True
 

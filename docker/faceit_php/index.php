@@ -149,5 +149,14 @@
     <strong>Location:</strong> Nuremberg, Germany<br>
     <strong>Status:</strong> Open to full-time roles
   </p>
+
+  <?php
+  $ip = $_SERVER['REMOTE_ADDR'];
+  $browser = $_SERVER['HTTP_USER_AGENT'];
+
+  echo "<p><small><strong>Your IP:</strong> {$ip}<br>";
+  echo "<strong>Your Browser:</strong> {$browser}</small></p>";
+  ?>
+
 </body>
 </html>
