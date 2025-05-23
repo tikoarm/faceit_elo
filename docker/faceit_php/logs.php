@@ -1,7 +1,7 @@
 
 
 <?php
-$admin_key = 'my_admin_key'; // замените на настоящий ключ
+$admin_key = 'admin_sk-f32ae769a8b54c0c92e0e08c7d0bd17a'; // замените на настоящий ключ
 $log_type = $_GET['type'] ?? 'info'; // можно менять на 'error', 'warning' и т.д.
 
 $url = "http://faceit_app:5050/logs/view?admin_key=$admin_key&log_type=$log_type";

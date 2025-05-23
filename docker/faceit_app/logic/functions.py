@@ -59,17 +59,25 @@ def dynamic_hash(ts: int) -> int:
 def send_apikey_to_subserver(ip: str, api_key: str):
     token = dynamic_hash(int(time.time()))
 
-    payload = {"token": token, "api_key": api_key}
+    params = {"token": token, "api_key": api_key}
 
     try:
-        response = requests.post(f"http://{ip}", json=payload, timeout=5)
+        response = requests.post(
+            f"http://{ip}/install", params=params, timeout=5
+        )
         data = response.json()
 
         if data.get("success") == "api_key is installed":
             return True
         else:
+            logging.warning(
+                "⚠️ Unexpected response from subserver %s: %s", ip, data
+            )
             return False
 
-    except Exception as e:
-        logging.error("❌ There is an error in 'send_apikey_to_subserver':", e)
+    except requests.exceptions.HTTPError as e:
+        logging.error("❌ HTTP error: %s", e)
+    except ValueError as e:
+        logging.error("❌ Failed to parse JSON: %s", e)
+        logging.error("❌ Response text was: %s", response.text)
         return False
