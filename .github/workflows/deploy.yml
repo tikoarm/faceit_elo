@@ -28,7 +28,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd /root/faceit-elo/docker
+            cd /root/faceit_elo/docker
             git pull origin main
             docker-compose rm -f -s app || true
             docker-compose build app
