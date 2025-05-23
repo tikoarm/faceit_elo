@@ -40,7 +40,7 @@ services:
     image: php:8.2-apache
     container_name: faceit_php
     ports:
-      - "8889:80"
+      - "8890:80"
     volumes:
       - ./faceit_php:/var/www/html
     depends_on:
