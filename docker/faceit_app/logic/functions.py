@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime
+
 import requests
 
 
@@ -35,7 +36,8 @@ def get_location_by_ip(ip: str) -> str:
 
     return "Unknown"
 
+
 def json_default_datetime(obj):
-        if isinstance(obj, datetime):
-            return obj.strftime("%Y-%m-%d %H:%M:%S")
-        return str(obj)
+    if isinstance(obj, datetime):
+        return obj.strftime("%Y-%m-%d %H:%M:%S")
+    return str(obj)

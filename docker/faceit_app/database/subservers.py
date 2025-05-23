@@ -1,13 +1,20 @@
 import logging
-from database.connection import get_connection
+
 from cache.sub_servers import subservers_cache_add
+from database.connection import get_connection
 
 
 def get_all_subservers_from_db():
     conn = get_connection()
     cursor = conn.cursor()
     try:
-        cursor.execute("SELECT id, ip, api_key, current_user_load, creation_date, location FROM subservers")
+        cursor.execute(
+            (
+                "SELECT "
+                "id, ip, api_key, current_user_load, creation_date, location"
+                " FROM subservers"
+            )
+        )
         rows = cursor.fetchall()
         return [
             {
@@ -44,11 +51,11 @@ def add_subserver_to_db(ip: str, api_key: str, location: str):
             ),
         )
         conn.commit()
-        subserver_id = cursor.lastrowid
+        newsub_id = cursor.lastrowid
 
-        subservers_cache_add((subserver_id, ip, api_key))
+        subservers_cache_add((newsub_id, ip, api_key))
         logging.info(
-            f"✅ Subserver with IP {ip} (ID: {subserver_id}) created successfully."
+            f"✅ Subserver with IP {ip} (ID: {newsub_id}) created successfully."
         )
         return True
 
@@ -77,7 +84,9 @@ async def load_subservers():
     finally:
         cursor.close()
         conn.close()
-        logging.info(f"Successfully loaded {len(entries)} subserver credentials")
+        logging.info(
+            f"Successfully loaded {len(entries)} subserver credentials"
+        )
 
 
 def get_all_subserver_users(subserver_id: int):
@@ -85,8 +94,11 @@ def get_all_subserver_users(subserver_id: int):
     cursor = conn.cursor()
     try:
         cursor.execute(
-            "SELECT id, sub_end_day, facet_id, faceit_username FROM users WHERE status = 1 AND subserver_id = %s",
-            (subserver_id,)
+            (
+                "SELECT id, sub_end_day, facet_id, faceit_username FROM users"
+                " WHERE status = 1 AND subserver_id = %s"
+            ),
+            (subserver_id,),
         )
         rows = cursor.fetchall()
         return [
@@ -99,7 +111,9 @@ def get_all_subserver_users(subserver_id: int):
             for row in rows
         ]
     except Exception as e:
-        logging.error(f"Error fetching users for subserver {subserver_id}: {e}")
+        logging.error(
+            f"Error fetching users for subserver {subserver_id}: {e}"
+        )
         return []
     finally:
         cursor.close()

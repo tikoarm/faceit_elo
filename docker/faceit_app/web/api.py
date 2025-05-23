@@ -1,16 +1,23 @@
-import asyncio
+import json
 import os
 import time
+from collections import OrderedDict
 from datetime import datetime
 from zoneinfo import ZoneInfo
-from collections import OrderedDict
-from database.subservers import add_subserver_to_db, get_all_subservers_from_db, get_all_subserver_users
+
 from cache import sub_servers
+from database.subservers import (
+    add_subserver_to_db,
+    get_all_subserver_users,
+    get_all_subservers_from_db,
+)
 from dotenv import dotenv_values, load_dotenv
-from flask import Flask, jsonify, request
-from logic.functions import format_seconds, get_location_by_ip, json_default_datetime
-import json
-from flask import Response
+from flask import Flask, Response, jsonify, request
+from logic.functions import (
+    format_seconds,
+    get_location_by_ip,
+    json_default_datetime,
+)
 
 app_start_time = time.time()
 
@@ -29,7 +36,7 @@ def get_subservers_users():
     apikey_param = request.args.get("api_key")
     if not apikey_param:
         return jsonify({"error": "API Key is required"}), 400
-    
+
     api_key = apikey_param.strip()
     client_ip = request.remote_addr
 
@@ -38,22 +45,27 @@ def get_subservers_users():
         return jsonify({"error": "API Key is invalid"}), 403
     elif validation_result == "wrong_ip":
         return jsonify({"error": "API Key is bound to another IP"}), 403
-    
+
     subserver_id = sub_servers.get_subserver_id_by_ip_key(client_ip, api_key)
     if not subserver_id:
-        return jsonify({"error": "There is an error with your api access"}), 403
-    
+        return (
+            jsonify({"error": "There is an error with your api access"}),
+            403,
+        )
+
     userslist = get_all_subserver_users(subserver_id)
-    response_data = OrderedDict([
-        ("status", "success"),
-        ("users_count", len(userslist)),
-        ("users", userslist)
-    ])
+    response_data = OrderedDict(
+        [
+            ("status", "success"),
+            ("users_count", len(userslist)),
+            ("users", userslist),
+        ]
+    )
 
     return Response(
         response=json.dumps(response_data, default=json_default_datetime),
         status=200,
-        mimetype="application/json"
+        mimetype="application/json",
     )
 
 
@@ -70,13 +82,16 @@ def get_subservers_cache():
     cache_list = sub_servers.get_cached_subservers()
 
     return Response(
-        response=json.dumps({
-            "status": "success",
-            "cached_subservers": cache_list,
-            "count": len(cache_list)
-        }, indent=2),
+        response=json.dumps(
+            {
+                "status": "success",
+                "cached_subservers": cache_list,
+                "count": len(cache_list),
+            },
+            indent=2,
+        ),
         status=200,
-        mimetype="application/json"
+        mimetype="application/json",
     )
 
 
@@ -91,16 +106,18 @@ def get_all_subservers():
         return jsonify({"error": f"Admin Key '{adm_key}' is Invalid!"}), 400
 
     subservers = get_all_subservers_from_db()
-    response_data = OrderedDict([
-        ("status", "success"),
-        ("subserver_count", len(subservers)),
-        ("subservers", subservers)
-    ])
+    response_data = OrderedDict(
+        [
+            ("status", "success"),
+            ("subserver_count", len(subservers)),
+            ("subservers", subservers),
+        ]
+    )
 
     return Response(
         response=json.dumps(response_data, default=json_default_datetime),
         status=200,
-        mimetype="application/json"
+        mimetype="application/json",
     )
 
 
@@ -126,20 +143,22 @@ def add_subserver():
     location = get_location_by_ip(ip)
     result = add_subserver_to_db(ip, api_key, location)
 
-    response_data = OrderedDict([
-        ("status", "processed"),
-        ("vps_ip", ip),
-        ("vps_api_key", api_key),
-        ("db_result", "done" if result else "failed"),
-        ("request_origin_ip", client_ip),
-        ("response_time_sec", round(time.time() - start_time, 4)),
-        ("vps_ip_location", location)
-    ])
+    response_data = OrderedDict(
+        [
+            ("status", "processed"),
+            ("vps_ip", ip),
+            ("vps_api_key", api_key),
+            ("db_result", "done" if result else "failed"),
+            ("request_origin_ip", client_ip),
+            ("response_time_sec", round(time.time() - start_time, 4)),
+            ("vps_ip_location", location),
+        ]
+    )
 
     return Response(
         response=json.dumps(response_data),
         status=200,
-        mimetype="application/json"
+        mimetype="application/json",
     )
 
 
