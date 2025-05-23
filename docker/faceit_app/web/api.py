@@ -17,6 +17,7 @@ from logic.functions import (
     format_seconds,
     get_location_by_ip,
     json_default_datetime,
+    send_apikey_to_subserver,
 )
 
 app_start_time = time.time()
@@ -142,6 +143,7 @@ def add_subserver():
     api_key = sub_servers.generate_api_key()
     location = get_location_by_ip(ip)
     result = add_subserver_to_db(ip, api_key, location)
+    installation = send_apikey_to_subserver(ip, api_key)
 
     response_data = OrderedDict(
         [
@@ -152,6 +154,7 @@ def add_subserver():
             ("request_origin_ip", client_ip),
             ("response_time_sec", round(time.time() - start_time, 4)),
             ("vps_ip_location", location),
+            ("subserver_installation", "done" if installation else "failed"),
         ]
     )
 

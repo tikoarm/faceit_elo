@@ -1,4 +1,5 @@
 import logging
+import time
 from datetime import datetime
 
 import requests
@@ -41,3 +42,34 @@ def json_default_datetime(obj):
     if isinstance(obj, datetime):
         return obj.strftime("%Y-%m-%d %H:%M:%S")
     return str(obj)
+
+
+def is_token_valid(received_token: int, window=20):
+    now = int(time.time())
+    for offset in range(-window, window + 1):
+        if dynamic_hash(now + offset) == received_token:
+            return True
+    return False
+
+
+def dynamic_hash(ts: int) -> int:
+    return int(((ts * 3.14) + 42) * 1.7) % 1000000007
+
+
+def send_apikey_to_subserver(ip: str, api_key: str):
+    token = dynamic_hash(int(time.time()))
+
+    payload = {"token": token, "api_key": api_key}
+
+    try:
+        response = requests.post(f"http://{ip}", json=payload, timeout=5)
+        data = response.json()
+
+        if data.get("success") == "api_key is installed":
+            return True
+        else:
+            return False
+
+    except Exception as e:
+        logging.error("❌ There is an error in 'send_apikey_to_subserver':", e)
+        return False

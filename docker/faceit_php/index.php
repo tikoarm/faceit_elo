@@ -151,7 +151,7 @@
   </p>
 
   <?php
-  $ip = $_SERVER['REMOTE_ADDR'];
+  $ip = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['HTTP_X_REAL_IP'] ?? $_SERVER['REMOTE_ADDR'];
   $browser = $_SERVER['HTTP_USER_AGENT'];
 
   echo "<p><small><strong>Your IP:</strong> {$ip}<br>";
