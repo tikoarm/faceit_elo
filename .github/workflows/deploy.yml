@@ -30,7 +30,7 @@ jobs:
           script: |
             cd /root/faceit_elo/docker
             git pull origin main
-            docker-compose rm -f -s app || true
-            docker-compose build app
-            docker-compose up -d app
+            docker-compose rm -f -s faceit_app || true
+            docker-compose build faceit_app
+            docker-compose up -d faceit_app
             
