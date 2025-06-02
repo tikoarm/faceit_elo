@@ -86,8 +86,8 @@ def get_subservers_cache():
         response=json.dumps(
             {
                 "status": "success",
-                "cached_subservers": cache_list,
                 "count": len(cache_list),
+                "cached_subservers": cache_list,
             },
             indent=2,
         ),
