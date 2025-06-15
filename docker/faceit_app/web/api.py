@@ -35,7 +35,7 @@ app = Flask(__name__)
 
 
 @app.route("/subservers/check_access", methods=["GET"])
-def get_all_subservers():
+def check_access_endpoint():
     subserver_id, error_response, status_code = validate_subserver_access(request)
     if error_response or not subserver_id:
         return error_response, status_code
