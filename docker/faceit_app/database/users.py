@@ -1,6 +1,5 @@
 import logging
 
-from cache.admin import update_admins
 from database.connection import get_connection
 
 
@@ -68,17 +67,15 @@ async def get_user_name_by_telegramid(telegram_id: int) -> str | None:
         cursor.close()
         conn.close()
 
-
-async def load_admins():
+async def get_telegramid_by_faceitid(faceit_id: int) -> str | None:
     conn = get_connection()
     cursor = conn.cursor()
     try:
-        cursor.execute("SELECT telegram_id FROM users WHERE admin = 1")
-        rows = cursor.fetchall()
-        admin_list = [row[0] for row in rows]
+        cursor.execute(
+            "SELECT telegram_id FROM users WHERE faceit_id = %s", (faceit_id,)
+        )
+        row = cursor.fetchone()
+        return row[0] if row else None
     finally:
         cursor.close()
         conn.close()
-        logging.info(f"Successfully loaded {len(admin_list)} admins")
-
-    await update_admins(admin_list)

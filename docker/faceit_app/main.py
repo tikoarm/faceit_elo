@@ -3,12 +3,17 @@ import logging
 import time
 from multiprocessing import Process
 
+from telegram import main as telegram
 from database.subservers import load_subservers
 from logic.logger import setup_logger
 from web.api import start_api
 
 setup_logger()
 logging.info("⏳ Please wait...")
+
+
+async def main():
+    await asyncio.gather(telegram.start())
 
 
 if __name__ == "__main__":
@@ -21,6 +26,8 @@ if __name__ == "__main__":
         logging.info("⏳ Webserver is starting...")
         api_process = Process(target=start_api)
         api_process.start()
+
+        asyncio.run(main())
 
     except KeyboardInterrupt:
         print("Bot stopped.")

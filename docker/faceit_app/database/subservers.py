@@ -95,7 +95,7 @@ def get_all_subserver_users(subserver_id: int):
     try:
         cursor.execute(
             (
-                "SELECT id, sub_end_day, facet_id, faceit_username FROM users"
+                "SELECT id, sub_end_day, faceit_id, faceit_username FROM users"
                 " WHERE status = 1 AND subserver_id = %s"
             ),
             (subserver_id,),
@@ -105,7 +105,7 @@ def get_all_subserver_users(subserver_id: int):
             {
                 "id": row[0],
                 "sub_end_day": row[1],
-                "facet_id": row[2],
+                "faceit_id": row[2],
                 "faceit_username": row[3],
             }
             for row in rows

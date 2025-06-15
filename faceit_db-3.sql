@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: faceit_db
--- Время создания: Май 22 2025 г., 19:38
+-- Время создания: Июн 15 2025 г., 20:10
 -- Версия сервера: 8.0.42
 -- Версия PHP: 8.2.27
 
@@ -20,6 +20,37 @@ SET time_zone = "+00:00";
 --
 -- База данных: `faceit_db`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `matches`
+--
+
+CREATE TABLE `matches` (
+  `id` int NOT NULL,
+  `userid` int NOT NULL,
+  `elo_before` int NOT NULL,
+  `elo_after` int NOT NULL,
+  `elo_difference` int NOT NULL,
+  `win` tinyint(1) NOT NULL,
+  `map` varchar(16) NOT NULL,
+  `nickname` varchar(32) NOT NULL,
+  `gameid` varchar(64) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Дамп данных таблицы `matches`
+--
+
+INSERT INTO `matches` (`id`, `userid`, `elo_before`, `elo_after`, `elo_difference`, `win`, `map`, `nickname`, `gameid`) VALUES
+(1, 2, 1000, 1025, 25, 1, 'de_dust2', 'bauld', '1-50dc6dc3-ceb9-48ed-b7e3-605fd1f6cb28'),
+(2, 2, 1000, 1025, 25, 0, 'de_dust2', 'bauld', '1-50dc6dc3-ceb9-48ed-b7e3-605fd1f6cb28'),
+(3, 2, 1000, 1025, 25, 0, 'de_dust2', 'bauld', '1-50dc6dc3-ceb9-48ed-b7e3-605fd1f6cb28'),
+(4, 2, 1000, 1025, 25, 0, 'de_dust2', 'bauld', '1-50dc6dc3-ceb9-48ed-b7e3-605fd1f6cb28'),
+(5, 2, 1000, 1025, 25, 0, 'de_dust2', 'bauld', '1-50dc6dc3-ceb9-48ed-b7e3-605fd1f6cb28'),
+(6, 2, 1000, 1025, 25, 1, 'de_dust2', 'bauld', '1-50dc6dc3-ceb9-48ed-b7e3-605fd1f6cb28'),
+(7, 2, 1000, 1025, 25, 1, 'de_dust2', 'bauld', '1-50dc6dc3-ceb9-48ed-b7e3-605fd1f6cb28');
 
 -- --------------------------------------------------------
 
@@ -82,7 +113,7 @@ CREATE TABLE `users` (
   `reg_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `sub_start_day` timestamp NOT NULL,
   `sub_end_day` timestamp NOT NULL,
-  `facet_id` bigint NOT NULL,
+  `faceit_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `faceit_username` varchar(32) NOT NULL,
   `telegram_id` bigint NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -91,13 +122,21 @@ CREATE TABLE `users` (
 -- Дамп данных таблицы `users`
 --
 
-INSERT INTO `users` (`id`, `status`, `subserver_id`, `reg_date`, `sub_start_day`, `sub_end_day`, `facet_id`, `faceit_username`, `telegram_id`) VALUES
-(2, 1, 7, '2025-05-22 19:23:03', '2025-05-22 19:23:03', '2025-05-22 19:23:03', 1, 'bauld', 251464707),
-(3, 1, 7, '2025-05-22 19:36:29', '2025-05-22 19:36:29', '2025-05-22 19:36:29', 2, 'bonna', 2);
+INSERT INTO `users` (`id`, `status`, `subserver_id`, `reg_date`, `sub_start_day`, `sub_end_day`, `faceit_id`, `faceit_username`, `telegram_id`) VALUES
+(2, 1, 7, '2025-05-22 19:23:03', '2025-05-22 19:23:03', '2025-05-22 19:23:03', '53a8d759-076b-4b4a-8101-7b12fa40032d', 'bauld', 251464707),
+(3, 1, 7, '2025-05-22 19:36:29', '2025-05-22 19:36:29', '2025-05-22 19:36:29', '2', 'bonna', 2),
+(4, 1, 7, '2025-06-15 19:59:57', '2025-06-15 19:59:57', '2025-06-15 19:59:57', '', 'unknown', 251464707);
 
 --
 -- Индексы сохранённых таблиц
 --
+
+--
+-- Индексы таблицы `matches`
+--
+ALTER TABLE `matches`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `userid` (`userid`);
 
 --
 -- Индексы таблицы `settings`
@@ -124,6 +163,12 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT для таблицы `matches`
+--
+ALTER TABLE `matches`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
 -- AUTO_INCREMENT для таблицы `settings`
 --
 ALTER TABLE `settings`
@@ -139,11 +184,17 @@ ALTER TABLE `subservers`
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц
 --
+
+--
+-- Ограничения внешнего ключа таблицы `matches`
+--
+ALTER TABLE `matches`
+  ADD CONSTRAINT `matches_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `users` (`id`);
 
 --
 -- Ограничения внешнего ключа таблицы `users`

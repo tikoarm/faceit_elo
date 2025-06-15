@@ -18,7 +18,9 @@ from logic.functions import (
     get_location_by_ip,
     json_default_datetime,
     send_apikey_to_subserver,
+    validate_subserver_access,
 )
+from logic.subserver_api.matches import user_finished_match
 
 app_start_time = time.time()
 
@@ -32,27 +34,70 @@ if not admin_key:
 app = Flask(__name__)
 
 
+@app.route("/subservers/add/match", methods=["GET"])
+def add_match_to_user():
+    #subserver_id, error_response, status_code = validate_subserver_access(request)
+    #if error_response or not subserver_id:
+    #    return error_response, status_code
+
+    userid = request.args.get("userid")
+    elo_before = int(request.args.get("elo_before"))
+    elo_after = int(request.args.get("elo_after"))
+    win = request.args.get("win")
+    map_name = request.args.get("map")
+    nickname = request.args.get("nickname")
+    gameid = request.args.get("gameid")
+
+    missing_params = []
+    if not userid:
+        missing_params.append("User ID")
+    if not elo_before:
+        missing_params.append("Players ELO Before")
+    if not elo_after:
+        missing_params.append("Players ELO After")
+    if win is None:
+        missing_params.append("Win?")
+    else:
+        win = win.lower() == "true"
+    if not map_name:
+        missing_params.append("Game Map")
+    if not nickname:
+        missing_params.append("Players NickName")
+    if not gameid:
+        missing_params.append("Game ID")
+
+    if missing_params:
+        return {
+            "error": "Missing required parameters",
+            "missing": missing_params
+        }, 400
+    
+    elo_difference = elo_after - elo_before
+    if elo_difference < 1:
+        elo_difference *= -1;
+    
+    success_bd, success_tg, success_mainfunc = user_finished_match(userid, elo_before, elo_after, elo_difference, map_name, win, nickname, gameid)
+
+    response_data = OrderedDict(
+        [
+            ("status", "added"),
+            ("success_bd", "yes" if success_bd else "no"),
+            ("success_tg", "yes" if success_tg else "no"),
+            ("success_mainfunc", "yes" if success_mainfunc else "no"),
+        ]
+    )
+    return Response(
+        response=json.dumps(response_data, default=json_default_datetime),
+        status=200,
+        mimetype="application/json",
+    )
+
+
 @app.route("/subservers/get/settings/users", methods=["GET"])
 def get_subservers_users():
-    apikey_param = request.args.get("api_key")
-    if not apikey_param:
-        return jsonify({"error": "API Key is required"}), 400
-
-    api_key = apikey_param.strip()
-    client_ip = request.remote_addr
-
-    validation_result = sub_servers.is_valid_subserver(client_ip, api_key)
-    if validation_result is False:
-        return jsonify({"error": "API Key is invalid"}), 403
-    elif validation_result == "wrong_ip":
-        return jsonify({"error": "API Key is bound to another IP"}), 403
-
-    subserver_id = sub_servers.get_subserver_id_by_ip_key(client_ip, api_key)
-    if not subserver_id:
-        return (
-            jsonify({"error": "There is an error with your api access"}),
-            403,
-        )
+    subserver_id, error_response, status_code = validate_subserver_access(request)
+    if error_response or not subserver_id:
+        return error_response, status_code
 
     userslist = get_all_subserver_users(subserver_id)
     response_data = OrderedDict(

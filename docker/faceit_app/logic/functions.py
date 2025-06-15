@@ -1,6 +1,8 @@
 import logging
 import time
 from datetime import datetime
+from flask import jsonify
+from cache import sub_servers
 
 import requests
 
@@ -81,3 +83,25 @@ def send_apikey_to_subserver(ip: str, api_key: str):
         logging.error("❌ Failed to parse JSON: %s", e)
         logging.error("❌ Response text was: %s", response.text)
         return False
+
+
+# Helper function for subserver API key and IP validation
+def validate_subserver_access(request):
+    apikey_param = request.args.get("api_key")
+    if not apikey_param:
+        return None, jsonify({"error": "API Key is required"}), 400
+
+    api_key = apikey_param.strip()
+    client_ip = request.remote_addr
+
+    validation_result = sub_servers.is_valid_subserver(client_ip, api_key)
+    if validation_result is False:
+        return None, jsonify({"error": "API Key is invalid"}), 403
+    elif validation_result == "wrong_ip":
+        return None, jsonify({"error": "API Key is bound to another IP"}), 403
+
+    subserver_id = sub_servers.get_subserver_id_by_ip_key(client_ip, api_key)
+    if not subserver_id:
+        return None, jsonify({"error": "There is an error with your api access"}), 403
+
+    return subserver_id, None, None
