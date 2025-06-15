@@ -34,11 +34,29 @@ if not admin_key:
 app = Flask(__name__)
 
 
+@app.route("/subservers/check_access", methods=["GET"])
+def get_all_subservers():
+    subserver_id, error_response, status_code = validate_subserver_access(request)
+    if error_response or not subserver_id:
+        return error_response, status_code
+
+    response_data = OrderedDict(
+        [
+            ("access", "allowed"),
+        ]
+    )
+
+    return Response(
+        response=json.dumps(response_data, default=json_default_datetime),
+        status=200,
+        mimetype="application/json",
+    )
+
 @app.route("/subservers/add/match", methods=["GET"])
 def add_match_to_user():
-    #subserver_id, error_response, status_code = validate_subserver_access(request)
-    #if error_response or not subserver_id:
-    #    return error_response, status_code
+    subserver_id, error_response, status_code = validate_subserver_access(request)
+    if error_response or not subserver_id:
+        return error_response, status_code
 
     userid = request.args.get("userid")
     elo_before = request.args.get("elo_before")
