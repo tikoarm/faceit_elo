@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: faceit_db
--- Время создания: Июн 15 2025 г., 20:10
+-- Время создания: Июн 15 2025 г., 22:55
 -- Версия сервера: 8.0.42
 -- Версия PHP: 8.2.27
 
@@ -38,19 +38,6 @@ CREATE TABLE `matches` (
   `nickname` varchar(32) NOT NULL,
   `gameid` varchar(64) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Дамп данных таблицы `matches`
---
-
-INSERT INTO `matches` (`id`, `userid`, `elo_before`, `elo_after`, `elo_difference`, `win`, `map`, `nickname`, `gameid`) VALUES
-(1, 2, 1000, 1025, 25, 1, 'de_dust2', 'bauld', '1-50dc6dc3-ceb9-48ed-b7e3-605fd1f6cb28'),
-(2, 2, 1000, 1025, 25, 0, 'de_dust2', 'bauld', '1-50dc6dc3-ceb9-48ed-b7e3-605fd1f6cb28'),
-(3, 2, 1000, 1025, 25, 0, 'de_dust2', 'bauld', '1-50dc6dc3-ceb9-48ed-b7e3-605fd1f6cb28'),
-(4, 2, 1000, 1025, 25, 0, 'de_dust2', 'bauld', '1-50dc6dc3-ceb9-48ed-b7e3-605fd1f6cb28'),
-(5, 2, 1000, 1025, 25, 0, 'de_dust2', 'bauld', '1-50dc6dc3-ceb9-48ed-b7e3-605fd1f6cb28'),
-(6, 2, 1000, 1025, 25, 1, 'de_dust2', 'bauld', '1-50dc6dc3-ceb9-48ed-b7e3-605fd1f6cb28'),
-(7, 2, 1000, 1025, 25, 1, 'de_dust2', 'bauld', '1-50dc6dc3-ceb9-48ed-b7e3-605fd1f6cb28');
 
 -- --------------------------------------------------------
 
@@ -92,13 +79,7 @@ CREATE TABLE `subservers` (
 --
 
 INSERT INTO `subservers` (`id`, `ip`, `api_key`, `current_user_load`, `creation_date`, `location`) VALUES
-(1, '5.9.10.10', '7302a516ed110b3f1853f7dd46a7bb7a', 0, '2025-05-22 18:40:21', 'Germany, Falkenstein'),
-(3, '51.68.12.34', '75f6dd76ddacd5bf2d50394115b42fef', 0, '2025-05-22 18:42:40', 'France, Roubaix'),
-(4, '185.107.56.217', 'eba96da7f38ebe3d32074d4792f1b8e8', 0, '2025-05-22 18:42:49', 'Netherlands, Enschede'),
-(5, '8.8.8.8', '980e63bfb8126025aca2c41b1da0733a', 0, '2025-05-22 18:42:59', 'United States, Mountain View'),
-(6, '43.249.36.50', 'eb1efceaddec98afafd6457a0a8c1bae', 0, '2025-05-22 18:43:07', 'Hong Kong, Hong Kong'),
-(7, '192.168.65.1', 'key', 0, '2025-05-22 18:51:43', 'localhost'),
-(8, '89.218.176.102', '368a2f4e162531337ede6a48832660ee', 0, '2025-05-22 19:00:32', 'Kazakhstan, Almaty');
+(7, '87.182.31.10', 'c8e7edb16900f948279b7a2a5b4f93da', 0, '2025-05-22 18:51:43', 'localhost');
 
 -- --------------------------------------------------------
 
