@@ -41,8 +41,8 @@ def add_match_to_user():
     #    return error_response, status_code
 
     userid = request.args.get("userid")
-    elo_before = int(request.args.get("elo_before"))
-    elo_after = int(request.args.get("elo_after"))
+    elo_before = request.args.get("elo_before")
+    elo_after = request.args.get("elo_after")
     win = request.args.get("win")
     map_name = request.args.get("map")
     nickname = request.args.get("nickname")
@@ -72,6 +72,14 @@ def add_match_to_user():
             "missing": missing_params
         }, 400
     
+    try:
+        elo_before = int(elo_before)
+        elo_after = int(elo_after)
+    except (TypeError, ValueError):
+        return {
+            "error": "ELO values must be valid integers"
+        }, 400
+
     elo_difference = elo_after - elo_before
     if elo_difference < 1:
         elo_difference *= -1;

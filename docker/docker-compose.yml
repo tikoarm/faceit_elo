@@ -36,7 +36,7 @@ services:
     depends_on:
       - faceit_db
 
-  php:
+  faceit_php:
     image: php:8.2-apache
     container_name: faceit_php
     ports:
