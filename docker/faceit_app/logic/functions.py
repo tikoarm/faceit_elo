@@ -99,7 +99,8 @@ def validate_subserver_access(request):
     if validation_result is False:
         return None, jsonify({"error": "API Key is invalid"}), 403
     elif validation_result == "wrong_ip":
-        return None, jsonify({"error": "API Key is bound to another IP"}), 403
+        error_text = f"API Key is bound to another IP. Your is: {client_ip}"
+        return None, jsonify({"error": error_text}), 403
 
     subserver_id = sub_servers.get_subserver_id_by_ip_key(client_ip, api_key)
     if not subserver_id:
