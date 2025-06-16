@@ -102,7 +102,7 @@ def add_match_to_user():
     if elo_difference < 1:
         elo_difference *= -1;
     
-    success_bd, success_tg, success_mainfunc = user_finished_match(userid, elo_before, elo_after, elo_difference, map_name, win, nickname, gameid)
+    success_bd, success_tg, success_mainfunc = user_finished_match(subserver_id, userid, elo_before, elo_after, elo_difference, map_name, win, nickname, gameid)
 
     response_data = OrderedDict(
         [

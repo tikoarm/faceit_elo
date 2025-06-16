@@ -4,7 +4,7 @@ from database.users import get_telegramid_by_faceitid
 from telegram.main import sendmessage
 import asyncio
 
-def user_finished_match(userid, elo_before, elo_after, elo_difference, map, win, nickname, gameid):
+def user_finished_match(subserver_id, userid, elo_before, elo_after, elo_difference, map, win, nickname, gameid):
     try:
         message = (
             "\n"
@@ -13,6 +13,7 @@ def user_finished_match(userid, elo_before, elo_after, elo_difference, map, win,
             f"ELO Before: {elo_before} | Elo After: {elo_after} | Difference: {elo_difference}\n"
             f"Win: {'True' if win == True else 'False'}\n"
             f"GameID: {gameid}\n"
+            f"Subserver ID: {subserver_id}\n"
             "============================================================\n"
         )
 
@@ -23,6 +24,6 @@ def user_finished_match(userid, elo_before, elo_after, elo_difference, map, win,
         return success_bd, success_tg, True
     
     except Exception as e:
-        logging.error(f"❌ Ошибка при вuser_finished_match: {e}", exc_info=True)
+        logging.error(f"❌ Ошибка при в user_finished_match: {e}", exc_info=True)
 
     return False, False, False
