@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Subserver Logs Viewer</title>
+</head>
+<body>
+    <?php
+    $correctPassword = 'V3ry$trongP@ssw0rd!';
+    // Получаем значения из URL, если они есть
+    $password = isset($_GET['password']) ? htmlspecialchars($_GET['password']) : '';
+    $subid = isset($_GET['subid']) ? htmlspecialchars($_GET['subid']) : '';
+
+    if ($subid && !ctype_digit($subid)) {
+        echo '<p style="color:red;"><strong>❌ ID саб-сервера должен содержать только цифры.</strong></p>';
+        $subid = ''; // сбросим, чтобы не проходило дальше
+    }
+    ?>
+
+    <h2>Просмотр логов</h2>
+    <form method="GET">
+        <label for="password">Пароль:</label><br>
+        <input type="<?= ($password === $correctPassword) ? 'password' : 'text' ?>" id="password" name="password" value="<?= $password ?>"><br><br>
+
+        <label for="subid">ID саб-сервера:</label><br>
+        <input type="text" id="subid" name="subid" value="<?= $subid ?>"><br><br>
+
+        <button type="submit">Открыть</button>
+    </form>
+
+    <?php
+    if ($password && $subid) {
+        if ($password !== $correctPassword) {
+            echo '<p style="color:red;"><strong>❌ Неверный пароль.</strong></p>';
+        } else {
+            // Загружаем .env вручную
+            $envPath = __DIR__ . '/../.env';
+            if (file_exists($envPath)) {
+                $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                foreach ($lines as $line) {
+                    if (strpos(trim($line), '#') === 0) continue;
+                    list($name, $value) = explode('=', $line, 2);
+                    $_ENV[$name] = $value;
+                }
+            }
+
+            $host = $_ENV['MYSQL_HOST'] ?? 'localhost';
+            $port = $_ENV['MYSQL_PORT'] ?? '3306';
+            $dbname = $_ENV['MYSQL_DATABASE'] ?? '';
+            $username = $_ENV['MYSQL_USER'] ?? 'root';
+            $password_db = $_ENV['MYSQL_PASSWORD'] ?? '';
+
+            $mysqli = new mysqli($host, $username, $password_db, $dbname, (int)$port);
+
+            if ($mysqli->connect_error) {
+                echo "<p style='color:red;'><strong>Ошибка подключения к БД:</strong> " . htmlspecialchars($mysqli->connect_error) . "</p>";
+            } else {
+                $stmt = $mysqli->prepare("SELECT api_key, ip, port FROM subservers WHERE id = ?");
+                $stmt->bind_param("i", $subid);
+                $stmt->execute();
+                $stmt->bind_result($api_key, $ip, $port);
+
+                if ($stmt->fetch()) 
+                {
+                    echo "<p>";
+                    echo "<strong>API Key:</strong> " . htmlspecialchars($api_key) . "<br>";
+                    echo "<strong>IP:</strong> " . htmlspecialchars($ip) . "<br>";
+                    echo "<strong>Port:</strong> " . htmlspecialchars($port) . "<br>";
+                    echo "</p>";
+                    
+                    $log_type = $_GET['type'] ?? 'info';
+                    $amount = $_GET['amount'] ?? '25';
+                    $order = $_GET['order'] ?? 'desc';
+
+                    $url = "http://$ip:$port/logs/view?admin_key=$api_key&log_type=$log_type&amount=$amount";
+
+                    // Инициализация cURL
+                    $ch = curl_init($url);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($ch, CURLOPT_HEADER, false);
+                    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2); // макс. 2 сек на соединение
+                    curl_setopt($ch, CURLOPT_TIMEOUT, 4);        // макс. 4 сек на весь запрос
+
+                    // Выполнение запроса
+                    $response = curl_exec($ch);
+                    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                    $error_msg = curl_error($ch);
+                    curl_close($ch);
+
+                    // Обработка ошибки соединения
+                    if ($response === false) {
+                        echo "<p>cURL error: " . htmlspecialchars($error_msg) . "</p>";
+                        exit;
+                    }
+
+                    if ($http_code >= 400) {
+                        echo "<p>API returned HTTP status $http_code</p>";
+                    }
+
+                    $data = json_decode($response, true);
+                    if (!$data) {
+                        echo "<p>Failed to decode response.</p>";
+                        exit;
+                    }
+
+                    if (isset($data['error'])) {
+                        echo "<p>Error: " . htmlspecialchars($data['error']) . "</p>";
+                        exit;
+                    }
+
+                    if (!isset($data['lines'])) {
+                        echo "<p>Failed to load logs.</p>";
+                        exit;
+                    }
+
+                    // Кнопки фильтра
+                    echo "<div style='margin-bottom: 10px;'>
+                            <a href='?password=$password&subid=$subid&type=info&amount=$amount'><button>Info</button></a>
+                            <a href='?password=$password&subid=$subid&type=warning&amount=$amount'><button>Warning</button></a>
+                            <a href='?password=$password&subid=$subid&type=error&amount=$amount'><button>Error</button></a>
+                            <a href='?password=$password&subid=$subid&type=systemlog&amount=$amount'><button>System Log</button></a>
+                          </div>";
+
+                    echo "<div style='margin-bottom: 10px;'>
+                            <a href='?password=$password&subid=$subid&type=$log_type&amount=25'><button>Last 25 lines</button></a>
+                            <a href='?password=$password&subid=$subid&type=$log_type&amount=50'><button>Last 50 lines</button></a>
+                            <a href='?password=$password&subid=$subid&type=$log_type&amount=100'><button>Last 100 lines</button></a>
+                            <a href='?password=$password&subid=$subid&type=$log_type&amount=-1'><button>Show all</button></a>
+                          </div>";
+
+                    echo "<div style='margin-bottom: 10px;'>
+                            <a href='?password=$password&subid=$subid&type=$log_type&amount=$amount&order=asc'><button>Newest first</button></a>
+                            <a href='?password=$password&subid=$subid&type=$log_type&amount=$amount&order=desc'><button>Oldest first</button></a>
+                          </div>";
+
+                    // Вывод логов
+                    echo "<h2>Logs (" . htmlspecialchars($log_type) . ")</h2><pre>";
+                    $lines = $data['lines'];
+                    if ($order === 'asc') {
+                        $lines = array_reverse($lines);
+                    }
+                    foreach ($lines as $line) {
+                        echo htmlspecialchars($line) . "\n";
+                    }
+                    echo "</pre>";
+                    
+                } 
+                else 
+                {
+                    echo "<p style='color:red;'><strong>❌ Саб-сервер с таким ID не найден.</strong></p>";
+                }
+
+                $stmt->close();
+                $mysqli->close();
+            }
+        }
+    }
+    ?>
+</body>
+</html>

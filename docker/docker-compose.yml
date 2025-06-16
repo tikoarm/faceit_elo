@@ -37,7 +37,9 @@ services:
       - faceit_db
 
   faceit_php:
-    image: php:8.2-apache
+    build:
+      context: ./faceit_php
+      dockerfile: Dockerfile
     container_name: faceit_php
     ports:
       - "8890:80"
@@ -45,6 +47,9 @@ services:
       - ./faceit_php:/var/www/html
     depends_on:
       - faceit_app
+      - faceit_db
+    env_file:
+      - .env
 
 volumes:
   faceit-db:
