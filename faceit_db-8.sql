@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: faceit_db
--- Время создания: Июн 15 2025 г., 22:55
+-- Время создания: Июн 16 2025 г., 19:52
 -- Версия сервера: 8.0.42
 -- Версия PHP: 8.2.27
 
@@ -39,6 +39,15 @@ CREATE TABLE `matches` (
   `gameid` varchar(64) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Дамп данных таблицы `matches`
+--
+
+INSERT INTO `matches` (`id`, `userid`, `elo_before`, `elo_after`, `elo_difference`, `win`, `map`, `nickname`, `gameid`) VALUES
+(8, 4, 4132, 4103, 29, 0, 'de_ancient', 'Bymas', '1-dc297f16-0c28-40d7-a81b-b10eff1a56a6'),
+(9, 4, 3432, 3456, 24, 1, 'de_nuke', 'Qlocuu', '1-bafd3a87-7842-4b79-be02-87dccc486582'),
+(10, 3, 2189, 2207, 18, 1, 'de_mirage', 'Bonnaa', '1-1f75614d-1601-4aa1-ba44-3faf77c48253');
+
 -- --------------------------------------------------------
 
 --
@@ -68,6 +77,7 @@ INSERT INTO `settings` (`id`, `max_users_per_vps`, `month_sub_price`, `trial_day
 CREATE TABLE `subservers` (
   `id` int NOT NULL,
   `ip` varchar(16) NOT NULL,
+  `port` int NOT NULL DEFAULT '5055',
   `api_key` varchar(64) NOT NULL,
   `current_user_load` int NOT NULL DEFAULT '0',
   `creation_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -78,8 +88,8 @@ CREATE TABLE `subservers` (
 -- Дамп данных таблицы `subservers`
 --
 
-INSERT INTO `subservers` (`id`, `ip`, `api_key`, `current_user_load`, `creation_date`, `location`) VALUES
-(7, '87.182.31.10', 'c8e7edb16900f948279b7a2a5b4f93da', 0, '2025-05-22 18:51:43', 'localhost');
+INSERT INTO `subservers` (`id`, `ip`, `port`, `api_key`, `current_user_load`, `creation_date`, `location`) VALUES
+(7, '87.182.31.10', 5055, 'c8e7edb16900f948279b7a2a5b4f93da', 3, '2025-05-22 18:51:43', 'localhost');
 
 -- --------------------------------------------------------
 
@@ -105,8 +115,30 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `status`, `subserver_id`, `reg_date`, `sub_start_day`, `sub_end_day`, `faceit_id`, `faceit_username`, `telegram_id`) VALUES
 (2, 1, 7, '2025-05-22 19:23:03', '2025-05-22 19:23:03', '2025-05-22 19:23:03', '53a8d759-076b-4b4a-8101-7b12fa40032d', 'bauld', 251464707),
-(3, 1, 7, '2025-05-22 19:36:29', '2025-05-22 19:36:29', '2025-05-22 19:36:29', '2', 'bonna', 2),
-(4, 1, 7, '2025-06-15 19:59:57', '2025-06-15 19:59:57', '2025-06-15 19:59:57', '', 'unknown', 251464707);
+(3, 0, 7, '2025-05-22 19:36:29', '2025-05-22 19:36:29', '2025-05-22 19:36:29', '549c61c4-f97d-4e7d-9e5a-32403045a3b4', 'Bonnaa', 251464707),
+(4, 0, 7, '2025-06-15 19:59:57', '2025-06-15 19:59:57', '2025-06-15 19:59:57', '1e01229f-b0d8-4cb1-82f0-6fd7dc362990', 'random', 251464707);
+
+--
+-- Триггеры `users`
+--
+DELIMITER $$
+CREATE TRIGGER `update_user_load` BEFORE UPDATE ON `users` FOR EACH ROW BEGIN
+    -- Уменьшаем загрузку на старом сабсервере
+    IF OLD.subserver_id IS NOT NULL THEN
+        UPDATE subservers
+        SET current_user_load = current_user_load - 1
+        WHERE id = OLD.subserver_id;
+    END IF;
+
+    -- Увеличиваем загрузку на новом сабсервере
+    IF NEW.subserver_id IS NOT NULL THEN
+        UPDATE subservers
+        SET current_user_load = current_user_load + 1
+        WHERE id = NEW.subserver_id;
+    END IF;
+END
+$$
+DELIMITER ;
 
 --
 -- Индексы сохранённых таблиц
@@ -147,7 +179,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `matches`
 --
 ALTER TABLE `matches`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT для таблицы `settings`

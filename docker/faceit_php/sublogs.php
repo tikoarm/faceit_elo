@@ -7,33 +7,33 @@
 <body>
     <?php
     $correctPassword = 'V3ry$trongP@ssw0rd!';
-    // Получаем значения из URL, если они есть
+    // Get values from URL if they exist
     $password = isset($_GET['password']) ? htmlspecialchars($_GET['password']) : '';
     $subid = isset($_GET['subid']) ? htmlspecialchars($_GET['subid']) : '';
 
     if ($subid && !ctype_digit($subid)) {
-        echo '<p style="color:red;"><strong>❌ ID саб-сервера должен содержать только цифры.</strong></p>';
-        $subid = ''; // сбросим, чтобы не проходило дальше
+        echo '<p style="color:red;"><strong>❌ Subserver ID must contain digits only.</strong></p>';
+        $subid = ''; // reset to prevent further processing
     }
     ?>
 
-    <h2>Просмотр логов</h2>
+    <h2>Subserver Logs Viewer</h2>
     <form method="GET">
-        <label for="password">Пароль:</label><br>
+        <label for="password">Password:</label><br>
         <input type="<?= ($password === $correctPassword) ? 'password' : 'text' ?>" id="password" name="password" value="<?= $password ?>"><br><br>
 
-        <label for="subid">ID саб-сервера:</label><br>
+        <label for="subid">Subserver ID:</label><br>
         <input type="text" id="subid" name="subid" value="<?= $subid ?>"><br><br>
 
-        <button type="submit">Открыть</button>
+        <button type="submit">Open</button>
     </form>
 
     <?php
     if ($password && $subid) {
         if ($password !== $correctPassword) {
-            echo '<p style="color:red;"><strong>❌ Неверный пароль.</strong></p>';
+            echo '<p style="color:red;"><strong>❌ Incorrect password.</strong></p>';
         } else {
-            // Загружаем .env вручную
+            // Load .env manually
             $envPath = __DIR__ . '/../.env';
             if (file_exists($envPath)) {
                 $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
@@ -53,7 +53,7 @@
             $mysqli = new mysqli($host, $username, $password_db, $dbname, (int)$port);
 
             if ($mysqli->connect_error) {
-                echo "<p style='color:red;'><strong>Ошибка подключения к БД:</strong> " . htmlspecialchars($mysqli->connect_error) . "</p>";
+                echo "<p style='color:red;'><strong>Database connection error:</strong> " . htmlspecialchars($mysqli->connect_error) . "</p>";
             } else {
                 $stmt = $mysqli->prepare("SELECT api_key, ip, port FROM subservers WHERE id = ?");
                 $stmt->bind_param("i", $subid);
@@ -74,20 +74,20 @@
 
                     $url = "http://$ip:$port/logs/view?admin_key=$api_key&log_type=$log_type&amount=$amount";
 
-                    // Инициализация cURL
+                    // Initialize cURL
                     $ch = curl_init($url);
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                     curl_setopt($ch, CURLOPT_HEADER, false);
-                    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2); // макс. 2 сек на соединение
-                    curl_setopt($ch, CURLOPT_TIMEOUT, 4);        // макс. 4 сек на весь запрос
+                    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2); // max 2 sec to connect
+                    curl_setopt($ch, CURLOPT_TIMEOUT, 4);        // max 4 sec for entire request
 
-                    // Выполнение запроса
+                    // Execute request
                     $response = curl_exec($ch);
                     $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
                     $error_msg = curl_error($ch);
                     curl_close($ch);
 
-                    // Обработка ошибки соединения
+                    // Handle connection error
                     if ($response === false) {
                         echo "<p>cURL error: " . htmlspecialchars($error_msg) . "</p>";
                         exit;
@@ -113,7 +113,7 @@
                         exit;
                     }
 
-                    // Кнопки фильтра
+                    // Filter buttons
                     echo "<div style='margin-bottom: 10px;'>
                             <a href='?password=$password&subid=$subid&type=info&amount=$amount'><button>Info</button></a>
                             <a href='?password=$password&subid=$subid&type=warning&amount=$amount'><button>Warning</button></a>
@@ -133,7 +133,7 @@
                             <a href='?password=$password&subid=$subid&type=$log_type&amount=$amount&order=desc'><button>Oldest first</button></a>
                           </div>";
 
-                    // Вывод логов
+                    // Logs output
                     echo "<h2>Logs (" . htmlspecialchars($log_type) . ")</h2><pre>";
                     $lines = $data['lines'];
                     if ($order === 'asc') {
@@ -147,7 +147,7 @@
                 } 
                 else 
                 {
-                    echo "<p style='color:red;'><strong>❌ Саб-сервер с таким ID не найден.</strong></p>";
+                    echo "<p style='color:red;'><strong>❌ No subserver found with this ID.</strong></p>";
                 }
 
                 $stmt->close();
