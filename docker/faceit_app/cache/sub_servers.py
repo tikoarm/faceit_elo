@@ -6,7 +6,7 @@ subservers_cache = set()  # stores (id, ip, port, api_key) tuples
 def generate_api_key():
     while True:
         new_key = secrets.token_hex(16)
-        if all(new_key != key for _, _, _, key in subservers_cache):
+        if all(len(item) == 4 and new_key != item[3] for item in subservers_cache):
             return new_key
 
 
