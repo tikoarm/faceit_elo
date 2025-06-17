@@ -37,11 +37,39 @@
     $correctPassword = 'V3ry$trongP@ssw0rd!';
     // Get values from URL if they exist
     $password = isset($_GET['password']) ? htmlspecialchars($_GET['password']) : '';
-    $subid = isset($_GET['subid']) ? htmlspecialchars($_GET['subid']) : '';
+    $subid = isset($_GET['subid']) ? $_GET['subid'] : '';
 
     if ($subid && !ctype_digit($subid)) {
         echo '<p style="color:red;"><strong>❌ Subserver ID must contain digits only.</strong></p>';
         $subid = ''; // reset to prevent further processing
+    }
+
+    // Подключение к БД и извлечение субсерверов для выпадающего списка
+    // Load .env manually (копия логики ниже, но только для подключения к БД)
+    $envPath = __DIR__ . '/../.env';
+    if (file_exists($envPath)) {
+        $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        foreach ($lines as $line) {
+            if (strpos(trim($line), '#') === 0) continue;
+            list($name, $value) = explode('=', $line, 2);
+            $_ENV[$name] = $value;
+        }
+    }
+    $host = $_ENV['MYSQL_HOST'] ?? 'localhost';
+    $port = $_ENV['MYSQL_PORT'] ?? '3306';
+    $dbname = $_ENV['MYSQL_DATABASE'] ?? '';
+    $username = $_ENV['MYSQL_USER'] ?? 'root';
+    $password_db = $_ENV['MYSQL_PASSWORD'] ?? '';
+    $mysqli = new mysqli($host, $username, $password_db, $dbname, (int)$port);
+    $subserverOptions = '';
+    if (!$mysqli->connect_error) {
+        $result = $mysqli->query("SELECT id, ip, location FROM subservers");
+        while ($row = $result->fetch_assoc()) {
+            $selected = ($row['id'] == $subid) ? 'selected' : '';
+            $label = "ID {$row['id']} | {$row['ip']} | {$row['location']}";
+            $subserverOptions .= "<option value=\"{$row['id']}\" $selected>" . htmlspecialchars($label) . "</option>";
+        }
+        $mysqli->close();
     }
     ?>
 
@@ -51,7 +79,9 @@
         <input type="<?= ($password === $correctPassword) ? 'password' : 'text' ?>" id="password" name="password" value="<?= $password ?>">
 
         <label for="subid">Subserver ID: </label>
-        <input type="text" id="subid" name="subid" value="<?= $subid ?>">
+        <select id="subid" name="subid">
+            <?= $subserverOptions ?>
+        </select>
 
         <button type="submit">Open</button>
     </form>
@@ -61,23 +91,6 @@
         if ($password !== $correctPassword) {
             echo '<p style="color:red;"><strong>❌ Incorrect password.</strong></p>';
         } else {
-            // Load .env manually
-            $envPath = __DIR__ . '/../.env';
-            if (file_exists($envPath)) {
-                $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-                foreach ($lines as $line) {
-                    if (strpos(trim($line), '#') === 0) continue;
-                    list($name, $value) = explode('=', $line, 2);
-                    $_ENV[$name] = $value;
-                }
-            }
-
-            $host = $_ENV['MYSQL_HOST'] ?? 'localhost';
-            $port = $_ENV['MYSQL_PORT'] ?? '3306';
-            $dbname = $_ENV['MYSQL_DATABASE'] ?? '';
-            $username = $_ENV['MYSQL_USER'] ?? 'root';
-            $password_db = $_ENV['MYSQL_PASSWORD'] ?? '';
-
             $mysqli = new mysqli($host, $username, $password_db, $dbname, (int)$port);
 
             if ($mysqli->connect_error) {

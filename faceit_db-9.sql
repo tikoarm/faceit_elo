@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: faceit_db
--- Время создания: Июн 16 2025 г., 19:52
+-- Время создания: Июн 17 2025 г., 00:45
 -- Версия сервера: 8.0.42
 -- Версия PHP: 8.2.27
 
@@ -89,7 +89,8 @@ CREATE TABLE `subservers` (
 --
 
 INSERT INTO `subservers` (`id`, `ip`, `port`, `api_key`, `current_user_load`, `creation_date`, `location`) VALUES
-(7, '87.182.31.10', 5055, 'c8e7edb16900f948279b7a2a5b4f93da', 3, '2025-05-22 18:51:43', 'localhost');
+(7, '87.182.31.10', 5055, 'c8e7edb16900f948279b7a2a5b4f93da', 2, '2025-05-22 18:51:43', 'localhost'),
+(10, '148.251.162.18', 5055, '9e5eeeb557a12510616e4168d39c208c', 1, '2025-06-17 00:21:48', 'Germany, Falkenstein');
 
 -- --------------------------------------------------------
 
@@ -114,7 +115,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `status`, `subserver_id`, `reg_date`, `sub_start_day`, `sub_end_day`, `faceit_id`, `faceit_username`, `telegram_id`) VALUES
-(2, 1, 7, '2025-05-22 19:23:03', '2025-05-22 19:23:03', '2025-05-22 19:23:03', '53a8d759-076b-4b4a-8101-7b12fa40032d', 'bauld', 251464707),
+(2, 1, 10, '2025-05-22 19:23:03', '2025-05-22 19:23:03', '2025-05-22 19:23:03', '53a8d759-076b-4b4a-8101-7b12fa40032d', 'bauld', 251464707),
 (3, 0, 7, '2025-05-22 19:36:29', '2025-05-22 19:36:29', '2025-05-22 19:36:29', '549c61c4-f97d-4e7d-9e5a-32403045a3b4', 'Bonnaa', 251464707),
 (4, 0, 7, '2025-06-15 19:59:57', '2025-06-15 19:59:57', '2025-06-15 19:59:57', '1e01229f-b0d8-4cb1-82f0-6fd7dc362990', 'random', 251464707);
 
@@ -191,7 +192,7 @@ ALTER TABLE `settings`
 -- AUTO_INCREMENT для таблицы `subservers`
 --
 ALTER TABLE `subservers`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT для таблицы `users`
