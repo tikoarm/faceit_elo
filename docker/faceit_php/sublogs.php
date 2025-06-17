@@ -1,4 +1,9 @@
 <?php session_start();
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header("Location: /sublogs.php");
+    exit;
+}
 if (isset($_POST['subid']) && isset($_POST['submit'])) {
     $subid = $_POST['subid'];
     $query = $_GET;
@@ -118,6 +123,9 @@ if (isset($_POST['subid']) && isset($_POST['submit'])) {
         <?php endif; ?>
 
         <button type="submit" name="submit">Open</button>
+        <?php if ($authenticated): ?>
+            <a href="?logout=1"><button type="button">Logout</button></a>
+        <?php endif; ?>
     </form>
 
     <?php
