@@ -74,9 +74,9 @@ async def load_subservers():
     cursor = conn.cursor()
     entries = []
     try:
-        cursor.execute("SELECT id, ip, api_key FROM subservers")
+        cursor.execute("SELECT id, ip, port, api_key FROM subservers")
         rows = cursor.fetchall()
-        entries = [(row[0], row[1], row[2]) for row in rows]
+        entries = [(row[0], row[1], row[2], row[3]) for row in rows]
         for entry in entries:
             subservers_cache_add(entry)
 
