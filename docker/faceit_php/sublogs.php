@@ -14,6 +14,7 @@
             font-family: monospace;
             font-size: 12px;
             white-space: pre-wrap;
+            line-height: 0.8;
         }
 
         h2 {
@@ -46,11 +47,11 @@
 
     <h2>Subserver Logs Viewer</h2>
     <form method="GET">
-        <label for="password">Password:</label><br>
-        <input type="<?= ($password === $correctPassword) ? 'password' : 'text' ?>" id="password" name="password" value="<?= $password ?>"><br><br>
+        <label for="password">Password: </label>
+        <input type="<?= ($password === $correctPassword) ? 'password' : 'text' ?>" id="password" name="password" value="<?= $password ?>">
 
-        <label for="subid">Subserver ID:</label><br>
-        <input type="text" id="subid" name="subid" value="<?= $subid ?>"><br><br>
+        <label for="subid">Subserver ID: </label>
+        <input type="text" id="subid" name="subid" value="<?= $subid ?>">
 
         <button type="submit">Open</button>
     </form>
