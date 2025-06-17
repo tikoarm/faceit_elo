@@ -1,3 +1,13 @@
+<?php session_start();
+if (isset($_POST['subid']) && isset($_POST['submit'])) {
+    $subid = $_POST['subid'];
+    $query = $_GET;
+    $query['subid'] = $subid;
+    $newQuery = http_build_query($query);
+    header("Location: ?" . $newQuery);
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -35,9 +45,24 @@
 <body>
     <?php
     $correctPassword = '123';
-    // Get values from URL if they exist
-    $password = isset($_GET['password']) ? htmlspecialchars($_GET['password']) : '';
-    $subid = isset($_GET['subid']) ? $_GET['subid'] : '';
+    $password = $_POST['password'] ?? '';
+    if ($password === $correctPassword) {
+        $_SESSION['authenticated'] = true;
+    }
+    elseif ($password !== '') {
+        $loginError = true;
+    }
+    $authenticated = $_SESSION['authenticated'] ?? false;
+    if (isset($_POST['subid']) && isset($_POST['submit'])) {
+        $subid = $_POST['subid'];
+        $query = $_GET;
+        $query['subid'] = $subid;
+        $newQuery = http_build_query($query);
+        header("Location: ?" . $newQuery);
+        exit;
+    }
+
+    $subid = $_GET['subid'] ?? '';
 
     if ($subid && !ctype_digit($subid)) {
         echo '<p style="color:red;"><strong>❌ Subserver ID must contain digits only.</strong></p>';
@@ -46,7 +71,7 @@
 
     // Блок выбора сабсервера и подключение к БД только если пароль корректен
     $subserverOptions = '';
-    if ($password === $correctPassword) {
+    if ($authenticated) {
         // Load .env manually (копия логики ниже, но только для подключения к БД)
         $envPath = __DIR__ . '/../.env';
         if (file_exists($envPath)) {
@@ -76,26 +101,27 @@
     ?>
 
     <h2>Subserver Logs Viewer</h2>
-    <form method="GET">
-        <label for="password">Password: </label>
-        <input type="<?= ($password === $correctPassword) ? 'password' : 'text' ?>" id="password" name="password" value="<?= $password ?>">
+    <?php if (!empty($loginError)): ?>
+        <p style="color:red;"><strong>❌ Incorrect password.</strong></p>
+    <?php endif; ?>
+    <form method="POST" action="" id="mainForm">
+        <?php if (!$authenticated): ?>
+            <label for="password">Password: </label>
+            <input type="password" id="password" name="password" value="">
+        <?php endif; ?>
 
-        <?php if ($password === $correctPassword): ?>
+        <?php if ($authenticated): ?>
             <label for="subid">Subserver ID: </label>
             <select id="subid" name="subid">
                 <?= $subserverOptions ?>
             </select>
         <?php endif; ?>
 
-        <button type="submit">Open</button>
+        <button type="submit" name="submit">Open</button>
     </form>
 
     <?php
-    if ($password) {
-        if ($password !== $correctPassword) {
-            echo '<p style="color:red;"><strong>❌ Incorrect password.</strong></p>';
-            return;
-        }
+    if ($authenticated) {
         if ($subid) {
             $mysqli = new mysqli($host, $username, $password_db, $dbname, (int)$port);
 
@@ -162,22 +188,22 @@
 
                     // Filter buttons
                     echo "<div style='margin-bottom: 10px;'>
-                            <a href='?password=$password&subid=$subid&type=info&amount=$amount'><button>Info</button></a>
-                            <a href='?password=$password&subid=$subid&type=warning&amount=$amount'><button>Warning</button></a>
-                            <a href='?password=$password&subid=$subid&type=error&amount=$amount'><button>Error</button></a>
-                            <a href='?password=$password&subid=$subid&type=systemlog&amount=$amount'><button>System Log</button></a>
+                            <a href='?subid=$subid&type=info&amount=$amount'><button>Info</button></a>
+                            <a href='?subid=$subid&type=warning&amount=$amount'><button>Warning</button></a>
+                            <a href='?subid=$subid&type=error&amount=$amount'><button>Error</button></a>
+                            <a href='?subid=$subid&type=systemlog&amount=$amount'><button>System Log</button></a>
                           </div>";
 
                     echo "<div style='margin-bottom: 10px;'>
-                            <a href='?password=$password&subid=$subid&type=$log_type&amount=25'><button>Last 25 lines</button></a>
-                            <a href='?password=$password&subid=$subid&type=$log_type&amount=50'><button>Last 50 lines</button></a>
-                            <a href='?password=$password&subid=$subid&type=$log_type&amount=100'><button>Last 100 lines</button></a>
-                            <a href='?password=$password&subid=$subid&type=$log_type&amount=-1'><button>Show all</button></a>
+                            <a href='?subid=$subid&type=$log_type&amount=25'><button>Last 25 lines</button></a>
+                            <a href='?subid=$subid&type=$log_type&amount=50'><button>Last 50 lines</button></a>
+                            <a href='?subid=$subid&type=$log_type&amount=100'><button>Last 100 lines</button></a>
+                            <a href='?subid=$subid&type=$log_type&amount=-1'><button>Show all</button></a>
                           </div>";
 
                     echo "<div style='margin-bottom: 10px;'>
-                            <a href='?password=$password&subid=$subid&type=$log_type&amount=$amount&order=asc'><button>Newest first</button></a>
-                            <a href='?password=$password&subid=$subid&type=$log_type&amount=$amount&order=desc'><button>Oldest first</button></a>
+                            <a href='?subid=$subid&type=$log_type&amount=$amount&order=asc'><button>Newest first</button></a>
+                            <a href='?subid=$subid&type=$log_type&amount=$amount&order=desc'><button>Oldest first</button></a>
                           </div>";
 
                     // Logs output
@@ -204,4 +230,5 @@
     }
     ?>
 </body>
+</html>
 </html>
