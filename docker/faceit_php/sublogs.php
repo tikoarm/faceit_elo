@@ -29,6 +29,22 @@
         button {
             font-size: 11px;
         }
+        div {
+            margin-top: 4px;
+            margin-bottom: 4px;
+        }
+
+        form label,
+        form input,
+        form button {
+            margin: 0;
+            padding: 0;
+            line-height: 1;
+        }
+
+        br {
+            display: none;
+        }
     </style>
 </head>
 <body>
