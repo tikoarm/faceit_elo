@@ -58,14 +58,14 @@ def dynamic_hash(ts: int) -> int:
     return int(((ts * 3.14) + 42) * 1.7) % 1000000007
 
 
-def send_apikey_to_subserver(ip: str, api_key: str):
+def send_apikey_to_subserver(ip: str, api_key: str, port: str):
     token = dynamic_hash(int(time.time()))
 
     params = {"token": token, "api_key": api_key}
 
     try:
         response = requests.post(
-            f"http://{ip}/install", params=params, timeout=5
+            f"http://{ip}:{port}/install", params=params, timeout=5
         )
         data = response.json()
 

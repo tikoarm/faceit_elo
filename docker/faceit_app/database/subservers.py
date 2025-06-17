@@ -35,17 +35,18 @@ def get_all_subservers_from_db():
         conn.close()
 
 
-def add_subserver_to_db(ip: str, api_key: str, location: str):
+def add_subserver_to_db(ip: str, port: str, api_key: str, location: str):
     conn = get_connection()
     cursor = conn.cursor()
     try:
         cursor.execute(
             (
-                "INSERT INTO subservers (ip, api_key, location)"
-                " VALUES (%s, %s, %s)"
+                "INSERT INTO subservers (ip, port, api_key, location)"
+                " VALUES (%s, %s, %s, %s)"
             ),
             (
                 ip,
+                port,
                 api_key,
                 location,
             ),
@@ -53,7 +54,7 @@ def add_subserver_to_db(ip: str, api_key: str, location: str):
         conn.commit()
         newsub_id = cursor.lastrowid
 
-        subservers_cache_add((newsub_id, ip, api_key))
+        subservers_cache_add((newsub_id, ip, port, api_key))
         logging.info(
             f"✅ Subserver with IP {ip} (ID: {newsub_id}) created successfully."
         )

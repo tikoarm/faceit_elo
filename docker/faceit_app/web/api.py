@@ -21,6 +21,7 @@ from logic.functions import (
     validate_subserver_access,
 )
 from logic.subserver_api.matches import user_finished_match
+import logging
 
 app_start_time = time.time()
 
@@ -208,13 +209,24 @@ def add_subserver():
         return jsonify({"error": "Subserver IP is required"}), 400
     ip = ip_param.strip()
 
+    port_param = request.args.get("port")
+    if not port_param:
+        return jsonify({"error": "Subserver port is required"}), 400
+    port = port_param.strip()
+
+
     start_time = time.time()
     client_ip = request.remote_addr
 
     api_key = sub_servers.generate_api_key()
     location = get_location_by_ip(ip)
-    result = add_subserver_to_db(ip, api_key, location)
-    installation = send_apikey_to_subserver(ip, api_key)
+    result = add_subserver_to_db(ip, port, api_key, location)
+
+    try:
+        installation = send_apikey_to_subserver(ip, api_key, port)
+    except Exception as e:
+        installation = False
+        logging.error(f"❌ Ошибка при установке API ключа на субсервер {ip}:{port} — {e}")
 
     response_data = OrderedDict(
         [
