@@ -3,6 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>Subserver Logs Viewer</title>
+    <style>
+        body {
+            font-family: monospace;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        pre {
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+
+        h2 {
+            font-size: 16px;
+        }
+
+        button {
+            font-size: 11px;
+        }
+    </style>
 </head>
 <body>
     <?php
