@@ -218,9 +218,13 @@ def add_subserver():
     start_time = time.time()
     client_ip = request.remote_addr
 
+    logging.info(f"11111")
     api_key = sub_servers.generate_api_key()
+    logging.info(f"apikey = {api_key}")
     location = get_location_by_ip(ip)
+    logging.info(f"location = {location}")
     result = add_subserver_to_db(ip, port, api_key, location)
+    logging.info(f"result = {result}")
 
     try:
         installation = send_apikey_to_subserver(ip, api_key, port)
