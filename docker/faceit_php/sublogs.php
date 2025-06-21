@@ -143,11 +143,46 @@ if (isset($_POST['subid']) && isset($_POST['submit'])) {
 
                 if ($stmt->fetch()) 
                 {
-                    echo "<p>";
-                    echo "<strong>API Key:</strong> " . htmlspecialchars($api_key) . "<br>";
-                    echo "<strong>IP:</strong> " . htmlspecialchars($ip) . "<br>";
-                    echo "<strong>Port:</strong> " . htmlspecialchars($port) . "<br>";
-                    echo "</p>";
+                    $health_ch = curl_init("http://$ip:$port/health?admin_key=$api_key");
+                    curl_setopt($health_ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($health_ch, CURLOPT_HEADER, false);
+                    curl_setopt($health_ch, CURLOPT_CONNECTTIMEOUT, 2);
+                    curl_setopt($health_ch, CURLOPT_TIMEOUT, 4);
+                    $health_response = curl_exec($health_ch);
+                    $health_http_code = curl_getinfo($health_ch, CURLINFO_HTTP_CODE);
+                    $health_error_msg = curl_error($health_ch);
+                    curl_close($health_ch);
+
+                    echo "<h3>Health Info</h3>";
+                    if ($health_response === false) {
+                        echo "<p>Health check failed: " . htmlspecialchars($health_error_msg) . "</p>";
+                    } elseif ($health_http_code >= 400) {
+                        echo "<p>Health check returned HTTP $health_http_code</p>";
+                    } else {
+                        $health_data = json_decode($health_response, true);
+                        if ($health_data) {
+                            echo "<table style='border-collapse: collapse; font-size: 12px; margin-bottom: 10px;'>";
+                            foreach ($health_data as $key => $value) {
+                                $value_display = is_array($value) ? json_encode($value) : $value;
+                                echo "<tr>
+                                        <td style='border: 1px solid #ccc; padding: 4px 8px; font-weight: bold; background: #f9f9f9;'>"
+                                            . htmlspecialchars($key) . "</td>
+                                        <td style='border: 1px solid #ccc; padding: 4px 8px;'>"
+                                            . htmlspecialchars($value_display) . "</td>
+                                      </tr>";
+                            }
+                            echo "</table>";
+                        } else {
+                            echo "<p>Invalid health check response.</p>";
+                        }
+                    }
+
+                    echo "<h3>DataBase</h3>";
+                    echo "<table style='border-collapse: collapse; font-size: 12px; margin-bottom: 10px;'>";
+                    echo "<tr><td style='border: 1px solid #ccc; padding: 4px 8px; font-weight: bold; background: #f9f9f9;'>API Key</td><td style='border: 1px solid #ccc; padding: 4px 8px;'>" . htmlspecialchars($api_key) . "</td></tr>";
+                    echo "<tr><td style='border: 1px solid #ccc; padding: 4px 8px; font-weight: bold; background: #f9f9f9;'>IP</td><td style='border: 1px solid #ccc; padding: 4px 8px;'>" . htmlspecialchars($ip) . "</td></tr>";
+                    echo "<tr><td style='border: 1px solid #ccc; padding: 4px 8px; font-weight: bold; background: #f9f9f9;'>Port</td><td style='border: 1px solid #ccc; padding: 4px 8px;'>" . htmlspecialchars($port) . "</td></tr>";
+                    echo "</table>";
                     
                     $log_type = $_GET['type'] ?? 'info';
                     $amount = $_GET['amount'] ?? '25';
