@@ -12,6 +12,25 @@ if (isset($_POST['subid']) && isset($_POST['submit'])) {
     header("Location: ?" . $newQuery);
     exit;
 }
+function obfuscate_text(string $text): string {
+    $len = strlen($text);
+    
+    if ($len > 6) {
+        return substr($text, 0, 3) . '...' . substr($text, -3);
+    } elseif ($len > 2) {
+        return substr($text, 0, 2) . str_repeat('*', $len - 2);
+    } else {
+        return $text;
+    }
+}
+function convert_timestamp(string $timestamp): string {
+    try {
+        $dt = new DateTime($timestamp);
+        return $dt->format('d.m.Y H:i:s');
+    } catch (Exception $e) {
+        return $timestamp;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -175,6 +194,9 @@ if (isset($_POST['subid']) && isset($_POST['submit'])) {
                             echo "</tr><tr>";
                             foreach ($health_keys as $key) {
                                 $val = isset($health_data[$key]) ? (is_array($health_data[$key]) ? json_encode($health_data[$key]) : $health_data[$key]) : '';
+                                if ($key === 'timestamp') {
+                                    $val = convert_timestamp((string)$val);
+                                }
                                 echo "<td style='border: 1px solid #ccc; padding: 4px 8px;'>" . htmlspecialchars((string)$val) . "</td>";
                             }
                             echo "</tr></table>";
@@ -193,7 +215,7 @@ if (isset($_POST['subid']) && isset($_POST['submit'])) {
                     echo "<th style='border: 1px solid #ccc; padding: 4px 8px; background: #f0f0f0;'>IP</th>";
                     echo "<th style='border: 1px solid #ccc; padding: 4px 8px; background: #f0f0f0;'>Port</th>";
                     echo "</tr><tr>";
-                    echo "<td style='border: 1px solid #ccc; padding: 4px 8px;'>" . htmlspecialchars($api_key) . "</td>";
+                    echo "<td style='border: 1px solid #ccc; padding: 4px 8px;'>" . htmlspecialchars(obfuscate_text($api_key)) . "</td>";
                     echo "<td style='border: 1px solid #ccc; padding: 4px 8px;'>" . htmlspecialchars($ip) . "</td>";
                     echo "<td style='border: 1px solid #ccc; padding: 4px 8px;'>" . htmlspecialchars($port) . "</td>";
                     echo "</tr></table>";
