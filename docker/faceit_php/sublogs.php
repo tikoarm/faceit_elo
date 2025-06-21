@@ -143,7 +143,7 @@ if (isset($_POST['subid']) && isset($_POST['submit'])) {
 
                 if ($stmt->fetch()) 
                 {
-                    $health_ch = curl_init("http://$ip:$port/health?admin_key=$api_key");
+                    $health_ch = curl_init("http://$ip:$port/health");
                     curl_setopt($health_ch, CURLOPT_RETURNTRANSFER, true);
                     curl_setopt($health_ch, CURLOPT_HEADER, false);
                     curl_setopt($health_ch, CURLOPT_CONNECTTIMEOUT, 2);
@@ -153,7 +153,12 @@ if (isset($_POST['subid']) && isset($_POST['submit'])) {
                     $health_error_msg = curl_error($health_ch);
                     curl_close($health_ch);
 
-                    echo "<h3>Health Info</h3>";
+                    // --- Inline tables in a flexbox container ---
+                    echo "<div style='display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start; margin-bottom: 14px;'>";
+
+                    // Health Info Table (Horizontal)
+                    echo "<div>";
+                    echo "<h3 style='margin-bottom:4px;'>Health Info</h3>";
                     if ($health_response === false) {
                         echo "<p>Health check failed: " . htmlspecialchars($health_error_msg) . "</p>";
                     } elseif ($health_http_code >= 400) {
@@ -161,34 +166,91 @@ if (isset($_POST['subid']) && isset($_POST['submit'])) {
                     } else {
                         $health_data = json_decode($health_response, true);
                         if ($health_data) {
-                            echo "<table style='border-collapse: collapse; font-size: 12px; margin-bottom: 10px;'>";
-                            foreach ($health_data as $key => $value) {
-                                $value_display = is_array($value) ? json_encode($value) : $value;
-                                echo "<tr>
-                                        <td style='border: 1px solid #ccc; padding: 4px 8px; font-weight: bold; background: #f9f9f9;'>"
-                                            . htmlspecialchars($key) . "</td>
-                                        <td style='border: 1px solid #ccc; padding: 4px 8px;'>"
-                                            . htmlspecialchars($value_display) . "</td>
-                                      </tr>";
+                            $health_keys = ['api_key', 'status', 'timestamp', 'timezone', 'uptime', 'version'];
+                            echo "<table style='border-collapse: collapse; font-size: 12px; margin-bottom: 0;'>";
+                            echo "<tr>";
+                            foreach ($health_keys as $key) {
+                                echo "<th style='border: 1px solid #ccc; padding: 4px 8px; background: #f0f0f0;'>" . htmlspecialchars($key) . "</th>";
                             }
-                            echo "</table>";
+                            echo "</tr><tr>";
+                            foreach ($health_keys as $key) {
+                                $val = isset($health_data[$key]) ? (is_array($health_data[$key]) ? json_encode($health_data[$key]) : $health_data[$key]) : '';
+                                echo "<td style='border: 1px solid #ccc; padding: 4px 8px;'>" . htmlspecialchars((string)$val) . "</td>";
+                            }
+                            echo "</tr></table>";
                         } else {
                             echo "<p>Invalid health check response.</p>";
                         }
                     }
+                    echo "</div>";
 
-                    echo "<h3>DataBase</h3>";
-                    echo "<table style='border-collapse: collapse; font-size: 12px; margin-bottom: 10px;'>";
-                    echo "<tr><td style='border: 1px solid #ccc; padding: 4px 8px; font-weight: bold; background: #f9f9f9;'>API Key</td><td style='border: 1px solid #ccc; padding: 4px 8px;'>" . htmlspecialchars($api_key) . "</td></tr>";
-                    echo "<tr><td style='border: 1px solid #ccc; padding: 4px 8px; font-weight: bold; background: #f9f9f9;'>IP</td><td style='border: 1px solid #ccc; padding: 4px 8px;'>" . htmlspecialchars($ip) . "</td></tr>";
-                    echo "<tr><td style='border: 1px solid #ccc; padding: 4px 8px; font-weight: bold; background: #f9f9f9;'>Port</td><td style='border: 1px solid #ccc; padding: 4px 8px;'>" . htmlspecialchars($port) . "</td></tr>";
-                    echo "</table>";
-                    
+                    // Database Table (Horizontal)
+                    echo "<div>";
+                    echo "<h3 style='margin-bottom:4px;'>DataBase</h3>";
+                    echo "<table style='border-collapse: collapse; font-size: 12px; margin-bottom: 0;'>";
+                    echo "<tr>";
+                    echo "<th style='border: 1px solid #ccc; padding: 4px 8px; background: #f0f0f0;'>API Key</th>";
+                    echo "<th style='border: 1px solid #ccc; padding: 4px 8px; background: #f0f0f0;'>IP</th>";
+                    echo "<th style='border: 1px solid #ccc; padding: 4px 8px; background: #f0f0f0;'>Port</th>";
+                    echo "</tr><tr>";
+                    echo "<td style='border: 1px solid #ccc; padding: 4px 8px;'>" . htmlspecialchars($api_key) . "</td>";
+                    echo "<td style='border: 1px solid #ccc; padding: 4px 8px;'>" . htmlspecialchars($ip) . "</td>";
+                    echo "<td style='border: 1px solid #ccc; padding: 4px 8px;'>" . htmlspecialchars($port) . "</td>";
+                    echo "</tr></table>";
+                    echo "</div>";
+
+                    // Tracked Users Table (keep as rows, but reduce padding)
+                    echo "<div style='min-width: 320px;'>";
+                    echo "<h3 style='margin-bottom:4px;'>Tracked Users</h3>";
+                    $users_url = "http://$ip:$port/users/trackinfo?api_key=$api_key";
+                    $users_ch = curl_init($users_url);
+                    curl_setopt($users_ch, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($users_ch, CURLOPT_HEADER, false);
+                    curl_setopt($users_ch, CURLOPT_CONNECTTIMEOUT, 2);
+                    curl_setopt($users_ch, CURLOPT_TIMEOUT, 4);
+                    $users_response = curl_exec($users_ch);
+                    $users_http_code = curl_getinfo($users_ch, CURLINFO_HTTP_CODE);
+                    $users_error_msg = curl_error($users_ch);
+                    curl_close($users_ch);
+
+                    if ($users_response === false) {
+                        echo "<p>Users API request failed: " . htmlspecialchars($users_error_msg) . "</p>";
+                    } elseif ($users_http_code >= 400) {
+                        echo "<p>Users API returned HTTP $users_http_code</p>";
+                    } else {
+                        $users_data = json_decode($users_response, true);
+                        if (is_array($users_data)) {
+                            echo "<table style='border-collapse: collapse; font-size: 12px; margin-bottom: 0;'>";
+                            echo "<tr>
+                                    <th style='border: 1px solid #ccc; padding: 3px 5px; background: #f0f0f0;'>Nickname</th>
+                                    <th style='border: 1px solid #ccc; padding: 3px 5px; background: #f0f0f0;'>ELO</th>
+                                    <th style='border: 1px solid #ccc; padding: 3px 5px; background: #f0f0f0;'>Game ID</th>
+                                    <th style='border: 1px solid #ccc; padding: 3px 5px; background: #f0f0f0;'>Last Game ID</th>
+                                    <th style='border: 1px solid #ccc; padding: 3px 5px; background: #f0f0f0;'>Delay</th>
+                                  </tr>";
+                            foreach ($users_data['tracked_users'] ?? [] as $user) {
+                                echo "<tr>
+                                        <td style='border: 1px solid #ccc; padding: 3px 5px;'>" . htmlspecialchars($user['nickname']) . "</td>
+                                        <td style='border: 1px solid #ccc; padding: 3px 5px;'>" . htmlspecialchars((string)$user['elo']) . "</td>
+                                        <td style='border: 1px solid #ccc; padding: 3px 5px;'>" . htmlspecialchars((string)($user['gameid'] ?? '—')) . "</td>
+                                        <td style='border: 1px solid #ccc; padding: 3px 5px;'>" . htmlspecialchars((string)($user['last_gameid'] ?? '—')) . "</td>
+                                        <td style='border: 1px solid #ccc; padding: 3px 5px;'>" . htmlspecialchars((string)$user['delay']) . "</td>
+                                      </tr>";
+                            }
+                            echo "</table>";
+                        } else {
+                            echo "<p>Invalid response from users API.</p>";
+                        }
+                    }
+                    echo "</div>";
+                    // --- End flexbox ---
+                    echo "</div>";
+
                     $log_type = $_GET['type'] ?? 'info';
                     $amount = $_GET['amount'] ?? '25';
                     $order = $_GET['order'] ?? 'desc';
 
-                    $url = "http://$ip:$port/logs/view?admin_key=$api_key&log_type=$log_type&amount=$amount";
+                    $url = "http://$ip:$port/logs/view?api_key=$api_key&log_type=$log_type&amount=$amount";
 
                     // Initialize cURL
                     $ch = curl_init($url);
