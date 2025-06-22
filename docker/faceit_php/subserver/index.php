@@ -1,4 +1,4 @@
-<?php session_start();
+<?php ob_start(); session_start();
 if (isset($_GET['logout'])) {
     session_destroy();
     header("Location: /subserver/index.php");
@@ -108,8 +108,37 @@ if($authenticated)
     }
 }
 
+// Handle Update Users form submission
+if (isset($_POST['reload_users'])) 
+{
+    if ($stmt->fetch())
+    {
+        $reload_url = "http://{$ip}:{$port}/users/reload?api_key=" . urlencode($api_key);
+        error_log("Sending POST to $reload_url");
+
+        $ch_reload = curl_init($reload_url);
+        curl_setopt($ch_reload, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch_reload, CURLOPT_HEADER, false);
+        curl_setopt($ch_reload, CURLOPT_CONNECTTIMEOUT, 2);
+        curl_setopt($ch_reload, CURLOPT_TIMEOUT, 4);
+        curl_setopt($ch_reload, CURLOPT_POST, true);
+
+        $reload_response = curl_exec($ch_reload);
+        $reload_http_code = curl_getinfo($ch_reload, CURLINFO_HTTP_CODE);
+        $reload_error_msg = curl_error($ch_reload);
+        curl_close($ch_reload);
+
+        error_log("Response: $reload_response, HTTP Code: $reload_http_code, Error: $reload_error_msg");
+
+        // Redirect after reload
+        header("Location: ?subid={$subid}");
+        exit;
+    }
+}
+
 // AJAX matchinfo proxy
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_matchinfo'], $_POST['matchinfo_for'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_matchinfo'], $_POST['matchinfo_for'])) 
+{
     $gameid = $_POST['matchinfo_for'];
     $userid = $_POST['userinfo_for'];
 
@@ -252,6 +281,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_matchinfo'], $_P
         button {
             font-size: 11px;
         }
+
+        th, td {
+            text-align: center;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
@@ -283,7 +316,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_matchinfo'], $_P
     <?php
     if ($authenticated) {
         if ($subid) {
-            if ($stmt->fetch()) {
+            if ($stmt->fetch()) 
+            {
                 $health_ch = curl_init("http://$ip:$port/health");
                 curl_setopt($health_ch, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($health_ch, CURLOPT_HEADER, false);
@@ -297,8 +331,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_matchinfo'], $_P
                 // --- Inline tables in a flexbox container ---
                 echo "<div style='display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start; margin-bottom: 14px;'>";
 
-                // Health Info Table (Horizontal)
-                echo "<div>";
+                // Health Info Table (3 columns per row, compact)
+                echo "<div style='max-width: 480px;'>";
                 echo "<h3 style='margin-bottom:4px;'>Health Info</h3>";
                 if ($health_response === false) {
                     echo "<p>Health check failed: " . htmlspecialchars($health_error_msg) . "</p>";
@@ -309,38 +343,59 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_matchinfo'], $_P
                     if ($health_data) {
                         $health_keys = ['api_key', 'status', 'timestamp', 'timezone', 'uptime', 'version'];
                         echo "<table style='border-collapse: collapse; font-size: 12px; margin-bottom: 0;'>";
-                        echo "<tr>";
-                        foreach ($health_keys as $key) {
-                            echo "<th style='border: 1px solid #ccc; padding: 4px 8px; background: #f0f0f0;'>" . htmlspecialchars($key) . "</th>";
-                        }
-                        echo "</tr><tr>";
-                        foreach ($health_keys as $key) {
-                            $val = isset($health_data[$key]) ? (is_array($health_data[$key]) ? json_encode($health_data[$key]) : $health_data[$key]) : '';
-                            if ($key === 'timestamp') {
-                                $val = convert_timestamp((string)$val);
+                        for ($i = 0; $i < count($health_keys); $i += 3) {
+                            echo "<tr>";
+                            for ($j = 0; $j < 3; $j++) {
+                                $key_index = $i + $j;
+                                if ($key_index < count($health_keys)) {
+                                    $key = $health_keys[$key_index];
+                                    echo "<th style='border: 1px solid #ccc; padding: 4px 6px; background: #f0f0f0;'>" . htmlspecialchars($key) . "</th>";
+                                } else {
+                                    echo "<th></th>";
+                                }
                             }
-                            echo "<td style='border: 1px solid #ccc; padding: 4px 8px;'>" . htmlspecialchars((string)$val) . "</td>";
+                            echo "</tr><tr>";
+                            for ($j = 0; $j < 3; $j++) {
+                                $key_index = $i + $j;
+                                if ($key_index < count($health_keys)) {
+                                    $key = $health_keys[$key_index];
+                                    $val = isset($health_data[$key]) ? (is_array($health_data[$key]) ? json_encode($health_data[$key]) : $health_data[$key]) : '';
+                                    if ($key === 'timestamp') {
+                                        $val = convert_timestamp((string)$val);
+                                    }
+                                    echo "<td style='border: 1px solid #ccc; padding: 4px 6px;'>" . htmlspecialchars((string)$val) . "</td>";
+                                } else {
+                                    echo "<td></td>";
+                                }
+                            }
+                            echo "</tr>";
                         }
-                        echo "</tr></table>";
+                        echo "</table>";
                     } else {
                         echo "<p>Invalid health check response.</p>";
                     }
                 }
                 echo "</div>";
 
-                // Database Table (Horizontal)
+                // Database Table (Vertical, per new instructions)
                 echo "<div>";
                 echo "<h3 style='margin-bottom:4px;'>DataBase</h3>";
                 echo "<table style='border-collapse: collapse; font-size: 12px; margin-bottom: 0;'>";
-                echo "<tr>";
-                echo "<th style='border: 1px solid #ccc; padding: 4px 8px; background: #f0f0f0;'>API Key</th>";
-                echo "<th style='border: 1px solid #ccc; padding: 4px 8px; background: #f0f0f0;'>IP</th>";
-                echo "<th style='border: 1px solid #ccc; padding: 4px 8px; background: #f0f0f0;'>Port</th>";
-                echo "</tr><tr>";
-                echo "<td style='border: 1px solid #ccc; padding: 4px 8px;'>" . htmlspecialchars(obfuscate_text($api_key)) . "</td>";
-                echo "<td style='border: 1px solid #ccc; padding: 4px 8px;'>" . htmlspecialchars($ip) . "</td>";
-                echo "<td style='border: 1px solid #ccc; padding: 4px 8px;'>" . htmlspecialchars($port) . "</td>";
-                echo "</tr></table>";
+                echo "<tr>
+                        <th style='border: 1px solid #ccc; padding: 4px 8px; background: #f0f0f0;' colspan='2'>API Key</th>
+                      </tr>
+                      <tr>
+                        <td colspan='2' style='border: 1px solid #ccc; padding: 4px 8px;'>" . htmlspecialchars(obfuscate_text($api_key)) . "</td>
+                      </tr>";
+                echo "<tr>
+                        <th style='border: 1px solid #ccc; padding: 4px 8px; background: #f0f0f0;'>IP</th>
+                        <th style='border: 1px solid #ccc; padding: 4px 8px; background: #f0f0f0;'>Port</th>
+                      </tr>
+                      <tr>
+                        <td style='border: 1px solid #ccc; padding: 4px 8px;'>" . htmlspecialchars($ip) . "</td>
+                        <td style='border: 1px solid #ccc; padding: 4px 8px;'>" . htmlspecialchars($port) . "</td>
+                      </tr>";
+                echo "</table>";
                 echo "</div>";
 
                 // Tracked Users Table (keep as rows, but reduce padding)
@@ -394,6 +449,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_matchinfo'], $_P
                                       </tr>";
                         }
                         echo "</table>";
+                        echo "<form method='POST' action='?subid={$subid}' style='margin-top:6px;'>";
+                        echo "<button type='submit' name='reload_users'>Update Users</button>";
+                        echo "</form>";
                     } else {
                         echo "<p>Invalid response from users API.</p>";
                     }
@@ -477,7 +535,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_matchinfo'], $_P
                     echo htmlspecialchars($line) . "\n";
                 }
                 echo "</pre>";
-            } else {
+            } 
+            else 
+            {
                 echo "<p style='color:red;'><strong>❌ No subserver found with this ID.</strong></p>";
             }
 
@@ -521,6 +581,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_matchinfo'], $_P
                 });
         });
     });
+
 </script>
 
 </html>
