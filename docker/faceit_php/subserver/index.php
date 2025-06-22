@@ -250,7 +250,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_matchinfo'], $_P
 
 <head>
     <meta charset="UTF-8">
-    <title>Subserver Logs Viewer</title>
+    <title>Subserver Viewer</title>
     <style>
         body {
             font-family: monospace;
@@ -288,7 +288,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_matchinfo'], $_P
 </head>
 
 <body>
-    <h2>Subserver Logs Viewer</h2>
+    <h2>Subserver Viewer</h2>
     <?php if (!empty($loginError)): ?>
         <p style="color:red;"><strong>❌ Incorrect password.</strong></p>
     <?php endif; ?>
