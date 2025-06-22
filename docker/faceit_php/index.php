@@ -499,7 +499,7 @@ $T = [
     </ul>
 
     <h2><?= $T['webui_header'][$lang] ?></h2>
-    <p><a href="sublogs.php"><?= $T['webui_link_text'][$lang] ?></a><br>
+    <p><a href="subserver/index.php"><?= $T['webui_link_text'][$lang] ?></a><br>
     <?= $T['webui_pass_note'][$lang] ?></p>
 
     <div class="author">
