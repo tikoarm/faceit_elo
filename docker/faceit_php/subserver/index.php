@@ -54,6 +54,11 @@ if (isset($_POST['subid']) && isset($_POST['submit'])) {
     header("Location: ?" . $newQuery);
     exit;
 }
+if (isset($_POST['set_type'])) {
+    $_SESSION['log_type'] = $_POST['set_type'];
+    header("Location: ?subid=" . ($_GET['subid'] ?? ''));
+    exit;
+}
 $subid = $_GET['subid'] ?? '';
 if ($subid && !ctype_digit($subid)) {
     echo '<p style="color:red;"><strong>❌ Subserver ID must contain digits only.</strong></p>';
@@ -460,9 +465,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_matchinfo'], $_P
                 // --- End flexbox ---
                 echo "</div>";
 
-                $log_type = $_GET['type'] ?? 'info';
-                $amount = $_GET['amount'] ?? '25';
-                $order = $_GET['order'] ?? 'desc';
+                if (isset($_GET['type'])) $_SESSION['log_type'] = $_GET['type'];
+                $log_type = $_SESSION['log_type'] ?? 'info';
+                if (isset($_GET['amount'])) $_SESSION['log_amount'] = $_GET['amount'];
+                $amount = $_SESSION['log_amount'] ?? '25';
+                if (isset($_GET['order'])) $_SESSION['log_order'] = $_GET['order'];
+                $order = $_SESSION['log_order'] ?? 'desc';
 
                 $url = "http://$ip:$port/logs/view?api_key=$api_key&log_type=$log_type&amount=$amount";
 
@@ -507,22 +515,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_matchinfo'], $_P
 
                 // Filter buttons
                 echo "<div style='margin-bottom: 10px;'>
-                            <a href='?subid=$subid&type=info&amount=$amount'><button>Info</button></a>
-                            <a href='?subid=$subid&type=warning&amount=$amount'><button>Warning</button></a>
-                            <a href='?subid=$subid&type=error&amount=$amount'><button>Error</button></a>
-                            <a href='?subid=$subid&type=systemlog&amount=$amount'><button>System Log</button></a>
+                        <form method='POST' action='?subid={$subid}' style='display:inline;'>
+                            <input type='hidden' name='set_type' value='info'>
+                            <button type='submit'>Info</button>
+                        </form>
+                        <form method='POST' action='?subid={$subid}' style='display:inline;'>
+                            <input type='hidden' name='set_type' value='warning'>
+                            <button type='submit'>Warning</button>
+                        </form>
+                        <form method='POST' action='?subid={$subid}' style='display:inline;'>
+                            <input type='hidden' name='set_type' value='error'>
+                            <button type='submit'>Error</button>
+                        </form>
+                        <form method='POST' action='?subid={$subid}' style='display:inline;'>
+                            <input type='hidden' name='set_type' value='systemlog'>
+                            <button type='submit'>System Log</button>
+                        </form>
+                    </div>";
+
+                echo "<div style='margin-bottom: 10px;'>
+                            <a href='?subid=$subid&set_amount=25'><button>Last 25 lines</button></a>
+                            <a href='?subid=$subid&set_amount=50'><button>Last 50 lines</button></a>
+                            <a href='?subid=$subid&set_amount=100'><button>Last 100 lines</button></a>
+                            <a href='?subid=$subid&set_amount=-1'><button>Show all</button></a>
                           </div>";
 
                 echo "<div style='margin-bottom: 10px;'>
-                            <a href='?subid=$subid&type=$log_type&amount=25'><button>Last 25 lines</button></a>
-                            <a href='?subid=$subid&type=$log_type&amount=50'><button>Last 50 lines</button></a>
-                            <a href='?subid=$subid&type=$log_type&amount=100'><button>Last 100 lines</button></a>
-                            <a href='?subid=$subid&type=$log_type&amount=-1'><button>Show all</button></a>
-                          </div>";
-
-                echo "<div style='margin-bottom: 10px;'>
-                            <a href='?subid=$subid&type=$log_type&amount=$amount&order=asc'><button>Newest first</button></a>
-                            <a href='?subid=$subid&type=$log_type&amount=$amount&order=desc'><button>Oldest first</button></a>
+                            <a href='?subid=$subid&set_order=asc'><button>Newest first</button></a>
+                            <a href='?subid=$subid&set_order=desc'><button>Oldest first</button></a>
                           </div>";
 
                 // Logs output
