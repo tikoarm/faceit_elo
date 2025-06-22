@@ -1,4 +1,5 @@
 <?php ob_start(); session_start();
+
 if (isset($_GET['logout'])) {
     session_destroy();
     header("Location: /subserver/index.php");
@@ -114,8 +115,6 @@ if (isset($_POST['reload_users']))
     if ($stmt->fetch())
     {
         $reload_url = "http://{$ip}:{$port}/users/reload?api_key=" . urlencode($api_key);
-        error_log("Sending POST to $reload_url");
-
         $ch_reload = curl_init($reload_url);
         curl_setopt($ch_reload, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch_reload, CURLOPT_HEADER, false);
@@ -128,9 +127,8 @@ if (isset($_POST['reload_users']))
         $reload_error_msg = curl_error($ch_reload);
         curl_close($ch_reload);
 
-        error_log("Response: $reload_response, HTTP Code: $reload_http_code, Error: $reload_error_msg");
-
         // Redirect after reload
+        $_SESSION['reloaded'] = 1;
         header("Location: ?subid={$subid}");
         exit;
     }
@@ -313,6 +311,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_matchinfo'], $_P
         <?php endif; ?>
     </form>
 
+
     <?php
     if ($authenticated) {
         if ($subid) {
@@ -449,7 +448,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_matchinfo'], $_P
                                       </tr>";
                         }
                         echo "</table>";
-                        echo "<form method='POST' action='?subid={$subid}' style='margin-top:6px;'>";
+                        echo "<form method='POST' action='?subid={$subid}' style='margin-top:6px;'>
+                                <input type='hidden' name='reloaded' value='1'>";
                         echo "<button type='submit' name='reload_users'>Update Users</button>";
                         echo "</form>";
                     } else {
@@ -581,7 +581,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_matchinfo'], $_P
                 });
         });
     });
-
 </script>
+
+<?php
+if (isset($_SESSION['reloaded']) && $_SESSION['reloaded'] == 1) {
+    echo "<script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: 'Users successfully reloaded.'
+        });
+    </script>";
+    if($_SESSION['reloaded'] == 1) $_SESSION['reloaded']++;
+    else unset($_SESSION['reloaded']);
+}
+?>
 
 </html>
