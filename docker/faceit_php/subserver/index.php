@@ -1,7 +1,7 @@
 <?php session_start();
 if (isset($_GET['logout'])) {
     session_destroy();
-    header("Location: /sublogs.php");
+    header("Location: /subserver/index.php");
     exit;
 }
 if (isset($_POST['subid']) && isset($_POST['submit'])) {
@@ -31,6 +31,28 @@ function convert_timestamp(string $timestamp): string {
         return $timestamp;
     }
 }
+?>
+
+<?php
+$correctPassword = '123';
+$password = $_POST['password'] ?? '';
+if ($password === $correctPassword) {
+    $_SESSION['authenticated'] = true;
+}
+elseif ($password !== '') {
+    $loginError = true;
+}
+$authenticated = $_SESSION['authenticated'] ?? false;
+
+if (isset($_POST['subid']) && isset($_POST['submit'])) {
+    $subid = $_POST['subid'];
+    $query = $_GET;
+    $query['subid'] = $subid;
+    $newQuery = http_build_query($query);
+    header("Location: ?" . $newQuery);
+    exit;
+}
+$subid = $_GET['subid'] ?? '';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -65,28 +87,11 @@ function convert_timestamp(string $timestamp): string {
             font-size: 11px;
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <?php
-    $correctPassword = '123';
-    $password = $_POST['password'] ?? '';
-    if ($password === $correctPassword) {
-        $_SESSION['authenticated'] = true;
-    }
-    elseif ($password !== '') {
-        $loginError = true;
-    }
-    $authenticated = $_SESSION['authenticated'] ?? false;
-    if (isset($_POST['subid']) && isset($_POST['submit'])) {
-        $subid = $_POST['subid'];
-        $query = $_GET;
-        $query['subid'] = $subid;
-        $newQuery = http_build_query($query);
-        header("Location: ?" . $newQuery);
-        exit;
-    }
-
-    $subid = $_GET['subid'] ?? '';
+    
 
     if ($subid && !ctype_digit($subid)) {
         echo '<p style="color:red;"><strong>❌ Subserver ID must contain digits only.</strong></p>';
@@ -251,12 +256,21 @@ function convert_timestamp(string $timestamp): string {
                                     <th style='border: 1px solid #ccc; padding: 3px 5px; background: #f0f0f0;'>Delay</th>
                                   </tr>";
                             foreach ($users_data['tracked_users'] ?? [] as $user) {
+                                $gameid_text = $user['gameid'] ?? null;
+                                if ($gameid_text) {
+                                    $gameid_display = "<a href=\"?subid={$subid}&matchinfo_for=" . urlencode($gameid_text) . "\">" . htmlspecialchars($gameid_text) . "</a>";
+                                } else {
+                                    $gameid_display = "—";
+                                }
+                                // $gameid_php_link is now unused/removed
+                                $last_gameid_text = $user['last_gameid'] ?? null;
+                                $last_gameid_display = $last_gameid_text ? "<a href='#' onclick=\"showGameID('Last Game', '$last_gameid_text'); return false;\">" . htmlspecialchars($last_gameid_text) . "</a>" : "—";
                                 echo "<tr>
                                         <td style='border: 1px solid #ccc; padding: 3px 5px;'>" . htmlspecialchars($user['nickname']) . "</td>
-                                        <td style='border: 1px solid #ccc; padding: 3px 5px;'>" . htmlspecialchars((string)$user['elo']) . "</td>
-                                        <td style='border: 1px solid #ccc; padding: 3px 5px;'>" . htmlspecialchars((string)($user['gameid'] ?? '—')) . "</td>
-                                        <td style='border: 1px solid #ccc; padding: 3px 5px;'>" . htmlspecialchars((string)($user['last_gameid'] ?? '—')) . "</td>
-                                        <td style='border: 1px solid #ccc; padding: 3px 5px;'>" . htmlspecialchars((string)$user['delay']) . "</td>
+                                        <td style='border: 1px solid #ccc; padding: 3px 5px;'>" . htmlspecialchars((string)$user['elo']) . "</td>";
+                                echo "<td style='border: 1px solid #ccc; padding: 3px 5px;'>$gameid_display</td>";
+                                echo "<td style='border: 1px solid #ccc; padding: 3px 5px;'>$last_gameid_display</td>";
+                                echo "<td style='border: 1px solid #ccc; padding: 3px 5px;'>" . htmlspecialchars((string)$user['delay']) . "</td>
                                       </tr>";
                             }
                             echo "</table>";
@@ -357,5 +371,4 @@ function convert_timestamp(string $timestamp): string {
     }
     ?>
 </body>
-</html>
 </html>

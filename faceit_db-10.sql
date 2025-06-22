@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: faceit_db
--- Время создания: Июн 17 2025 г., 00:45
+-- Время создания: Июн 21 2025 г., 18:44
 -- Версия сервера: 8.0.42
 -- Версия PHP: 8.2.27
 
@@ -36,17 +36,22 @@ CREATE TABLE `matches` (
   `win` tinyint(1) NOT NULL,
   `map` varchar(16) NOT NULL,
   `nickname` varchar(32) NOT NULL,
-  `gameid` varchar(64) NOT NULL
+  `gameid` varchar(64) NOT NULL,
+  `finish` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Дамп данных таблицы `matches`
 --
 
-INSERT INTO `matches` (`id`, `userid`, `elo_before`, `elo_after`, `elo_difference`, `win`, `map`, `nickname`, `gameid`) VALUES
-(8, 4, 4132, 4103, 29, 0, 'de_ancient', 'Bymas', '1-dc297f16-0c28-40d7-a81b-b10eff1a56a6'),
-(9, 4, 3432, 3456, 24, 1, 'de_nuke', 'Qlocuu', '1-bafd3a87-7842-4b79-be02-87dccc486582'),
-(10, 3, 2189, 2207, 18, 1, 'de_mirage', 'Bonnaa', '1-1f75614d-1601-4aa1-ba44-3faf77c48253');
+INSERT INTO `matches` (`id`, `userid`, `elo_before`, `elo_after`, `elo_difference`, `win`, `map`, `nickname`, `gameid`, `finish`) VALUES
+(8, 4, 4132, 4103, 29, 0, 'de_ancient', 'Bymas', '1-dc297f16-0c28-40d7-a81b-b10eff1a56a6', '2025-06-21 18:44:26'),
+(9, 4, 3432, 3456, 24, 1, 'de_nuke', 'Qlocuu', '1-bafd3a87-7842-4b79-be02-87dccc486582', '2025-06-21 18:44:26'),
+(10, 3, 2189, 2207, 18, 1, 'de_mirage', 'Bonnaa', '1-1f75614d-1601-4aa1-ba44-3faf77c48253', '2025-06-21 18:44:26'),
+(11, 3, 2262, 2282, 20, 1, 'de_mirage', 'Bonnaa', '1-ab49615e-6fe0-47e5-9dfe-360441282a60', '2025-06-21 18:44:26'),
+(12, 3, 2282, 2257, 25, 0, 'de_dust2', 'Bonnaa', '1-f3c5131e-5d6c-4d99-9466-f695da282762', '2025-06-21 18:44:26'),
+(13, 4, 3575, 3545, 30, 0, 'de_mirage', 'Qlocuu', '1-b36d27b9-01c4-4d02-8e6c-fd0c53219bf4', '2025-06-21 18:44:26'),
+(14, 3, 2257, 2232, 25, 0, 'de_dust2', 'Bonnaa', '1-a9416747-4c8b-4ea3-8341-819f90a468ad', '2025-06-21 18:44:26');
 
 -- --------------------------------------------------------
 
@@ -89,8 +94,8 @@ CREATE TABLE `subservers` (
 --
 
 INSERT INTO `subservers` (`id`, `ip`, `port`, `api_key`, `current_user_load`, `creation_date`, `location`) VALUES
-(7, '87.182.31.10', 5055, 'c8e7edb16900f948279b7a2a5b4f93da', 2, '2025-05-22 18:51:43', 'localhost'),
-(10, '148.251.162.18', 5055, '9e5eeeb557a12510616e4168d39c208c', 1, '2025-06-17 00:21:48', 'Germany, Falkenstein');
+(7, '87.182.31.10', 5055, 'c8e7edb16900f948279b7a2a5b4f93da', 0, '2025-05-22 18:51:43', 'localhost'),
+(10, '148.251.162.18', 5055, '9e5eeeb557a12510616e4168d39c208c', 3, '2025-06-17 00:21:48', 'Germany, Falkenstein');
 
 -- --------------------------------------------------------
 
@@ -116,8 +121,8 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `status`, `subserver_id`, `reg_date`, `sub_start_day`, `sub_end_day`, `faceit_id`, `faceit_username`, `telegram_id`) VALUES
 (2, 1, 10, '2025-05-22 19:23:03', '2025-05-22 19:23:03', '2025-05-22 19:23:03', '53a8d759-076b-4b4a-8101-7b12fa40032d', 'bauld', 251464707),
-(3, 0, 7, '2025-05-22 19:36:29', '2025-05-22 19:36:29', '2025-05-22 19:36:29', '549c61c4-f97d-4e7d-9e5a-32403045a3b4', 'Bonnaa', 251464707),
-(4, 0, 7, '2025-06-15 19:59:57', '2025-06-15 19:59:57', '2025-06-15 19:59:57', '1e01229f-b0d8-4cb1-82f0-6fd7dc362990', 'random', 251464707);
+(3, 1, 10, '2025-05-22 19:36:29', '2025-05-22 19:36:29', '2025-05-22 19:36:29', '549c61c4-f97d-4e7d-9e5a-32403045a3b4', 'Bonnaa', 251464707),
+(4, 1, 10, '2025-06-15 19:59:57', '2025-06-15 19:59:57', '2025-06-15 19:59:57', '1e01229f-b0d8-4cb1-82f0-6fd7dc362990', 'random', 251464707);
 
 --
 -- Триггеры `users`
@@ -180,7 +185,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `matches`
 --
 ALTER TABLE `matches`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT для таблицы `settings`
