@@ -145,8 +145,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_matchinfo'], $_P
                 } 
                 elseif ($status === 'FINISHED') 
                 {
-                    echo "[CURL] ✅ Матч завершён\n";
-                    print_r ($response_data);
+                    $output = "👤 Player: <strong><a href='https://www.faceit.com/en/players/" . ($response_data['nickname'] ?? '-') . "' target='_blank' rel='noopener noreferrer'>" . ($response_data['nickname'] ?? '-') . "</a></strong>\n";
+                    if($response_data['match_id']) {
+                        $output .= "🆔 Match ID: <strong><a href='https://www.faceit.com/ru/cs2/room/" . ($response_data['match_id'] ?? '-') . "' target='_blank' rel='noopener noreferrer'>" .    ($response_data['match_id'] ?? '-') . "</a></strong>\n";
+                    } else $output .= "🆔 Match ID: <strong>-</strong>\n";
+                    
+
+
+                    $output .= "🌍 Location: <strong>" . ($response_data['location'] ?? '-') . "</strong>\n";
+                    $output .= "🏆 Queue: <strong>" . ($response_data['competition_name'] ?? '-') . "</strong>\n";
+                    $output .= "📍 Map: <strong>" . ($response_data['map'] ?? '-') . "</strong>\n";
+                    $output .= "🏁 Started: <strong>" . ($response_data['started_at'] ?? '-') . "</strong>\n";
+                    $output .= "🚩 Finished: <strong>" . ($response_data['finished_at'] ?? '-') . "</strong>\n";
+                    $output .= "🔢 Overtime Score: <strong>" . ($response_data['overtime_score'] ?? '-') . "</strong>\n";
+                    $output .= "🔢 Score: <strong>" . ($response_data['total_score'] ?? '-') . "</strong>\n";
+                    $output .= "📣 Status: <strong>" . $status . "</strong>\n";
+                    $output .= "🔗 URL: <strong><a href='" . ($response_data['faceit_url'] ?? '-') . "' target='_blank' rel='noopener noreferrer'>link</a></strong>\n\n";
+
+                    if (!empty($response_data['player_stats']) && is_array($response_data['player_stats'])) {
+                        $ps = $response_data['player_stats'];
+                        $stats_table = "
+<table style='border-collapse: collapse; font-size: 12px; margin-top: 6px;'>
+<tr><th style='border: 1px solid #ccc; padding: 4px 8px;'>Stat</th><th style='border: 1px solid #ccc; padding: 4px 8px;'>Value</th></tr>";
+
+                        $stat_map = [
+                            'kills' => 'Kills',
+                            'assists' => 'Assists',
+                            'deaths' => 'Deaths',
+                            'kd_ratio' => 'K/D',
+                            'kr_ratio' => 'K/R',
+                            'hs_percentage' => 'HS%',
+                            'mvps' => 'MVPs',
+                            'damage' => 'Damage',
+                            'utility_damage' => 'Utility Damage',
+                            'first_kills' => 'First Kills',
+                            'match_1v1_win_rate' => 'Match 1v1 Wins (rate)',
+                            'match_entry_rate' => 'Match Entry Rate',
+                            'enemies_flashed_per_round' => 'Enemies Flashed / Round',
+                            '1v1wins' => '1v1 Wins',
+                        ];
+
+                        foreach ($stat_map as $key => $label) {
+                            $value = isset($ps[$key]) ? $ps[$key] : '-';
+                            $stats_table .= "<tr><td style='border: 1px solid #ccc; padding: 4px 8px;'>$label</td><td style='border: 1px solid #ccc; padding: 4px 8px;'>$value</td></tr>";
+                        }
+
+                        $stats_table .= "</table>";
+                        $output .= "<strong>📊 Player Stats:</strong>" . $stats_table;
+                    }
+
+                    echo $output;
                 } 
                 else 
                 {
@@ -327,14 +375,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_matchinfo'], $_P
                         foreach ($users_data['tracked_users'] ?? [] as $user) {
                             $gameid_text = $user['gameid'] ?? null;
                             if ($gameid_text) {
-                                //$gameid_display = "<a href='#' class='gameid-link' data-gameid='" . htmlspecialchars($gameid_text, ENT_QUOTES) . "'>" . htmlspecialchars($gameid_text) . "</a>";
                                 $gameid_display = "<a href='#' class='gameid-link' data-gameid='" . htmlspecialchars($gameid_text, ENT_QUOTES) . "' data-userid='" . htmlspecialchars($user['faceit_id'], ENT_QUOTES) . "'>" . htmlspecialchars($gameid_text) . "</a>";
                             } else {
                                 $gameid_display = "—";
                             }
+
                             // $gameid_php_link is now unused/removed
                             $last_gameid_text = $user['last_gameid'] ?? null;
-                            $last_gameid_display = $last_gameid_text ? "<a href='#' onclick=\"showGameID('Last Game', '$last_gameid_text'); return false;\">" . htmlspecialchars($last_gameid_text) . "</a>" : "—";
+                            $last_gameid_display = "<a href='#' class='gameid-link' data-gameid='" . htmlspecialchars($last_gameid_text, ENT_QUOTES) . "' data-userid='" . htmlspecialchars($user['faceit_id'], ENT_QUOTES) . "'>" . htmlspecialchars($last_gameid_text) . "</a>";
+
+
                             echo "<tr>
                                         <td style='border: 1px solid #ccc; padding: 3px 5px;'>" . htmlspecialchars($user['nickname']) . "</td>
                                         <td style='border: 1px solid #ccc; padding: 3px 5px;'>" . htmlspecialchars((string)$user['elo']) . "</td>";
