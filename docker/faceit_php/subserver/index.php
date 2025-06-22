@@ -1,4 +1,5 @@
-<?php ob_start(); session_start();
+<?php
+ob_start(); session_start();
 
 if (isset($_GET['logout'])) {
     session_destroy();
@@ -137,6 +138,39 @@ if (isset($_POST['reload_users']))
         header("Location: ?subid={$subid}");
         exit;
     }
+}
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nickname_lookup'], $_POST['nickname'])) 
+{
+    if ($stmt->fetch())
+    {
+        $nickname = $_POST['nickname'];
+        $flask_url = "http://$ip:$port/get_faceit_id?nickname=" . urlencode($nickname) . "&api_key=$api_key";
+
+        $ch = curl_init($flask_url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 4);
+
+        $response = curl_exec($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error = curl_error($ch);
+        curl_close($ch);
+
+        if ($response === false || $http_code >= 400) {
+            $json = json_decode($response, true);
+            $msg = $json['error'] ?? ($json ? json_encode($json) : ($error ?: 'Unknown error'));
+            echo "Ошибка API: HTTP $http_code – " . htmlspecialchars($msg);
+        } else {
+            $json = json_decode($response, true);
+            if (isset($json['player_id'])) {
+                echo "✅ Faceit ID пользователя $nickname - '" . htmlspecialchars($json['player_id']) . "'";
+            } else {
+                echo "Ответ API: " . htmlspecialchars($response);
+            }
+        }
+    }
+    exit;
 }
 
 // AJAX matchinfo proxy
@@ -422,44 +456,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_matchinfo'], $_P
                     echo "<p>Users API returned HTTP $users_http_code</p>";
                 } else {
                     $users_data = json_decode($users_response, true);
-                    if (is_array($users_data)) {
-                        echo "<table style='border-collapse: collapse; font-size: 12px; margin-bottom: 0;'>";
-                        echo "<tr>
-                                    <th style='border: 1px solid #ccc; padding: 3px 5px; background: #f0f0f0;'>Nickname</th>
-                                    <th style='border: 1px solid #ccc; padding: 3px 5px; background: #f0f0f0;'>ELO</th>
-                                    <th style='border: 1px solid #ccc; padding: 3px 5px; background: #f0f0f0;'>Game ID</th>
-                                    <th style='border: 1px solid #ccc; padding: 3px 5px; background: #f0f0f0;'>Last Game ID</th>
-                                    <th style='border: 1px solid #ccc; padding: 3px 5px; background: #f0f0f0;'>Delay</th>
-                                  </tr>";
-                        foreach ($users_data['tracked_users'] ?? [] as $user) {
-                            $gameid_text = $user['gameid'] ?? null;
-                            if ($gameid_text) {
-                                $gameid_display = "<a href='#' class='gameid-link' data-gameid='" . htmlspecialchars($gameid_text, ENT_QUOTES) . "' data-userid='" . htmlspecialchars($user['faceit_id'], ENT_QUOTES) . "'>" . htmlspecialchars($gameid_text) . "</a>";
-                            } else {
-                                $gameid_display = "—";
-                            }
-
-                            // $gameid_php_link is now unused/removed
-                            $last_gameid_text = $user['last_gameid'] ?? null;
-                            $last_gameid_display = "<a href='#' class='gameid-link' data-gameid='" . htmlspecialchars($last_gameid_text, ENT_QUOTES) . "' data-userid='" . htmlspecialchars($user['faceit_id'], ENT_QUOTES) . "'>" . htmlspecialchars($last_gameid_text) . "</a>";
-
-
-                            echo "<tr>
-                                        <td style='border: 1px solid #ccc; padding: 3px 5px;'>" . htmlspecialchars($user['nickname']) . "</td>
-                                        <td style='border: 1px solid #ccc; padding: 3px 5px;'>" . htmlspecialchars((string)$user['elo']) . "</td>";
-                            echo "<td style='border: 1px solid #ccc; padding: 3px 5px;'>$gameid_display</td>";
-                            echo "<td style='border: 1px solid #ccc; padding: 3px 5px;'>$last_gameid_display</td>";
-                            echo "<td style='border: 1px solid #ccc; padding: 3px 5px;'>" . htmlspecialchars((string)$user['delay']) . "</td>
-                                      </tr>";
+                if (is_array($users_data)) {
+                    echo "<table style='border-collapse: collapse; font-size: 12px; margin-bottom: 0;'>";
+                    echo "<tr>
+                                <th style='border: 1px solid #ccc; padding: 3px 5px; background: #f0f0f0;'>Nickname</th>
+                                <th style='border: 1px solid #ccc; padding: 3px 5px; background: #f0f0f0;'>ELO</th>
+                                <th style='border: 1px solid #ccc; padding: 3px 5px; background: #f0f0f0;'>Game ID</th>
+                                <th style='border: 1px solid #ccc; padding: 3px 5px; background: #f0f0f0;'>Last Game ID</th>
+                                <th style='border: 1px solid #ccc; padding: 3px 5px; background: #f0f0f0;'>Delay</th>
+                              </tr>";
+                    foreach ($users_data['tracked_users'] ?? [] as $user) {
+                        $gameid_text = $user['gameid'] ?? null;
+                        if ($gameid_text) {
+                            $gameid_display = "<a href='#' class='gameid-link' data-gameid='" . htmlspecialchars($gameid_text, ENT_QUOTES) . "' data-userid='" . htmlspecialchars($user['faceit_id'], ENT_QUOTES) . "'>" . htmlspecialchars($gameid_text) . "</a>";
+                        } else {
+                            $gameid_display = "—";
                         }
-                        echo "</table>";
-                        echo "<form method='POST' action='?subid={$subid}' style='margin-top:6px;'>
-                                <input type='hidden' name='reloaded' value='1'>";
-                        echo "<button type='submit' name='reload_users'>Update Users</button>";
-                        echo "</form>";
-                    } else {
-                        echo "<p>Invalid response from users API.</p>";
+
+                        // $gameid_php_link is now unused/removed
+                        $last_gameid_text = $user['last_gameid'] ?? null;
+                        $last_gameid_display = "<a href='#' class='gameid-link' data-gameid='" . htmlspecialchars($last_gameid_text, ENT_QUOTES) . "' data-userid='" . htmlspecialchars($user['faceit_id'], ENT_QUOTES) . "'>" . htmlspecialchars($last_gameid_text) . "</a>";
+
+                        echo "<tr>
+                                    <td style='border: 1px solid #ccc; padding: 3px 5px;'>" . htmlspecialchars($user['nickname']) . "</td>
+                                    <td style='border: 1px solid #ccc; padding: 3px 5px;'>" . htmlspecialchars((string)$user['elo']) . "</td>";
+                        echo "<td style='border: 1px solid #ccc; padding: 3px 5px;'>$gameid_display</td>";
+                        echo "<td style='border: 1px solid #ccc; padding: 3px 5px;'>$last_gameid_display</td>";
+                        echo "<td style='border: 1px solid #ccc; padding: 3px 5px;'>" . htmlspecialchars((string)$user['delay']) . "</td>
+                                  </tr>";
                     }
+                    echo "</table>";
+                    // Insert the Find/Update buttons side-by-side, same size, aligned
+                    echo "<div style='display: flex; gap: 8px; margin-top: 6px; align-items: center;'>";
+                    echo "<div style='flex: 0 0 auto;'>
+                            <button id=\"findUserBtn\" type=\"button\" style=\"padding: 6px 14px; width: 130px;\">Find User</button>
+                          </div>";
+                    echo "<div style='flex: 0 0 auto;'>
+                            <form method='POST' action='?subid={$subid}' style='margin: 0;'>
+                              <input type='hidden' name='reloaded' value='1'>
+                              <button type='submit' name='reload_users' style='padding: 6px 14px; width: 130px;'>Update Users</button>
+                            </form>
+                          </div>";
+                    echo "</div>";
+                } else {
+                    echo "<p>Invalid response from users API.</p>";
+                }
                 }
                 echo "</div>";
                 // --- End flexbox ---
@@ -566,6 +607,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_matchinfo'], $_P
         }
     }
     ?>
+</div>
 </body>
 <script>
     document.querySelectorAll('.gameid-link').forEach(function(link) {
@@ -599,6 +641,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_matchinfo'], $_P
                         text: err
                     });
                 });
+        });
+    });
+
+    document.getElementById('findUserBtn')?.addEventListener('click', function () {
+        Swal.fire({
+            title: 'Enter nickname',
+            input: 'text',
+            inputLabel: 'FACEIT nickname',
+            showCancelButton: true,
+            confirmButtonText: 'Lookup',
+            preConfirm: (value) => {
+                if (!value) {
+                    Swal.showValidationMessage('Please enter a nickname');
+                }
+                return value;
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const form = new FormData();
+                form.append('nickname_lookup', '1');
+                form.append('nickname', result.value);
+
+                fetch(window.location.pathname + '?subid=<?php echo $subid; ?>', {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    body: form
+                })
+                .then(res => res.text())
+                .then(text => {
+                    Swal.fire({
+                        title: 'Faceit ID',
+                        text: text
+                    });
+                })
+                .catch(err => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ошибка запроса',
+                        text: err
+                    });
+                });
+            }
         });
     });
 </script>
