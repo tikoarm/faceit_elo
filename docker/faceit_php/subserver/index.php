@@ -160,13 +160,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nickname_lookup'], $_
         if ($response === false || $http_code >= 400) {
             $json = json_decode($response, true);
             $msg = $json['error'] ?? ($json ? json_encode($json) : ($error ?: 'Unknown error'));
-            echo "Ошибка API: HTTP $http_code – " . htmlspecialchars($msg);
+            echo "API Error: HTTP $http_code – " . htmlspecialchars($msg);
         } else {
             $json = json_decode($response, true);
             if (isset($json['player_id'])) {
-                echo "✅ Faceit ID пользователя $nickname - '" . htmlspecialchars($json['player_id']) . "'";
+                echo "✅ $nickname's Faceit ID is '" . htmlspecialchars($json['player_id']) . "'";
             } else {
-                echo "Ответ API: " . htmlspecialchars($response);
+                echo "API Response: " . htmlspecialchars($response);
             }
         }
     }
