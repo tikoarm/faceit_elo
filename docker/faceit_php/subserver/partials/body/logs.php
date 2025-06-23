@@ -69,18 +69,37 @@ echo "
         </form>
     </div>";
 
+
 echo "
     <div style='margin-bottom: 10px;'>
-        <a href='?subid=$subid&set_amount=25'><button>Last 25 lines</button></a>
-        <a href='?subid=$subid&set_amount=50'><button>Last 50 lines</button></a>
-        <a href='?subid=$subid&set_amount=100'><button>Last 100 lines</button></a>
-        <a href='?subid=$subid&set_amount=-1'><button>Show all</button></a>
+        <form method='POST' action='?subid={$subid}' style='display:inline;'>
+            <input type='hidden' name='set_amount' value='25'>
+            <button type='submit'>Last 25 lines</button>
+        </form>
+        <form method='POST' action='?subid={$subid}' style='display:inline;'>
+            <input type='hidden' name='set_amount' value='50'>
+                <button type='submit'>Last 50 lines</button>
+        </form>
+        <form method='POST' action='?subid={$subid}' style='display:inline;'>
+            <input type='hidden' name='set_amount' value='100'>
+            <button type='submit'>Last 100 lines</button>
+        </form>
+        <form method='POST' action='?subid={$subid}' style='display:inline;'>
+            <input type='hidden' name='set_amount' value='-1'>
+            <button type='submit'>Show all</button>
+        </form>
     </div>";
 
 echo "
     <div style='margin-bottom: 10px;'>
-        <a href='?subid=$subid&set_order=asc'><button>Newest first</button></a>
-        <a href='?subid=$subid&set_order=desc'><button>Oldest first</button></a>
+        <form method='POST' action='?subid={$subid}' style='display:inline;'>
+            <input type='hidden' name='set_order' value='asc'>
+            <button type='submit'>Newest first</button>
+        </form>
+        <form method='POST' action='?subid={$subid}' style='display:inline;'>
+            <input type='hidden' name='set_order' value='desc'>
+                <button type='submit'>Oldest first</button>
+        </form>
     </div>";
 
 // Logs output

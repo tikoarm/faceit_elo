@@ -8,11 +8,25 @@ if (isset($_POST['subid']) && isset($_POST['submit'])) {
     header("Location: ?" . $newQuery);
     exit;
 }
+
+
 if (isset($_POST['set_type'])) {
     $_SESSION['log_type'] = $_POST['set_type'];
     header("Location: ?subid=" . ($_GET['subid'] ?? ''));
     exit;
 }
+if (isset($_POST['set_amount'])) {
+    $_SESSION['log_amount'] = $_POST['set_amount'];
+    header("Location: ?subid=" . ($_GET['subid'] ?? ''));
+    exit;
+}
+if (isset($_POST['set_order'])) {
+    $_SESSION['log_order'] = $_POST['set_order'];
+    header("Location: ?subid=" . ($_GET['subid'] ?? ''));
+    exit;
+}
+
+
 $subid = $_GET['subid'] ?? '';
 if ($subid && !ctype_digit($subid)) {
     echo '<p style="color:red;"><strong>❌ Subserver ID must contain digits only.</strong></p>';
