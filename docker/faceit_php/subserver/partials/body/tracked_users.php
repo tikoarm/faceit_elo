@@ -29,6 +29,7 @@ if ($users_response === false) {
                 <th style='background: #f0f0f0;'>Game ID</th>
                 <th style='background: #f0f0f0;'>Last Game ID</th>
                 <th style='background: #f0f0f0;'>Delay</th>
+                <th style='background: #f0f0f0;'>Action</th>
             </tr>";
         foreach ($users_data['tracked_users'] ?? [] as $user) {
             $gameid_text = $user['gameid'] ?? null;
@@ -47,7 +48,13 @@ if ($users_response === false) {
                     <td>" . htmlspecialchars((string)$user['elo']) . "</td>";
             echo "<td>$gameid_display</td>";
             echo "<td>$last_gameid_display</td>";
-            echo "<td>" . htmlspecialchars((string)$user['delay']) . "</td>
+            echo "<td>" . htmlspecialchars((string)$user['delay']) . "</td>";
+            echo "<td>
+                    <form method='POST' action='?subid={$subid}' style='margin:0;'>
+                        <input type='hidden' name='unlink_faceit_id' value='" . htmlspecialchars($user['faceit_id'], ENT_QUOTES) . "'>
+                        <button type='submit' style='padding:2px 8px; font-size:12px;'>Unlink</button>
+                    </form>
+                  </td>
                 </tr>";
         }
         echo "</table>";

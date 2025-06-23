@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/main.php';
 
 // Блок выбора сабсервера и подключение к БД только если пароль корректен
 $stmt = null;
@@ -14,12 +15,7 @@ if ($authenticated) {
             $_ENV[$name] = $value;
         }
     }
-    $host = $_ENV['MYSQL_HOST'] ?? 'localhost';
-    $port = $_ENV['MYSQL_PORT'] ?? '3306';
-    $dbname = $_ENV['MYSQL_DATABASE'] ?? '';
-    $username = $_ENV['MYSQL_USER'] ?? 'root';
-    $password_db = $_ENV['MYSQL_PASSWORD'] ?? '';
-    $mysqli = new mysqli($host, $username, $password_db, $dbname, (int)$port);
+    $mysqli = getDatabaseConnection();
     if (!$mysqli->connect_error) {
         $result = $mysqli->query("SELECT id, ip, location FROM subservers");
         while ($row = $result->fetch_assoc()) {
@@ -35,7 +31,7 @@ if($authenticated)
 {
     if($subid) 
     {
-        $mysqli = new mysqli($host, $username, $password_db, $dbname, (int)$port);
+        $mysqli = getDatabaseConnection();
         if ($mysqli->connect_error) 
         {
             echo "<p style='color:red;'><strong>Database connection error:</strong> " . htmlspecialchars($mysqli->connect_error) . "</p>";
@@ -56,6 +52,45 @@ function getDataBaseStmt(): ?mysqli_stmt {
         return $stmt;
     }
     return null;
+}
+function unlinkFaceitUser(string $faceit_id): bool {
+    $mysqli = getDatabaseConnection();
+    if (!$mysqli || $mysqli->connect_error) {
+        echo "<p style='color:red;'><strong>Database connection error:</strong> " . htmlspecialchars($mysqli->connect_error) . "</p>";
+        return false;
+    }
+
+    $query = "UPDATE users SET subserver_id = NULL WHERE faceit_id = ?";
+    $stmt = $mysqli->prepare($query);
+    if (!$stmt) {
+        echo "<p>Prepare failed: " . htmlspecialchars($mysqli->error) . "</p>";
+        $mysqli->close();
+        return false;
+    }
+
+    $stmt->bind_param("s", $faceit_id);
+
+    $success = $stmt->execute();
+    if (!$success) {
+        echo "<p>Execute failed: " . htmlspecialchars($stmt->error) . "</p>";
+    }
+
+    $stmt->close();
+    $mysqli->close();
+
+    if ($success) {
+        echo "<script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Пользователь успешно отвязан',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            });
+        </script>";
+    }
+    return $success;
 }
 
 ?>

@@ -1,4 +1,5 @@
 <?php
+require_once dirname(__DIR__, 1) . '/functions.php';
 
 // AJAX matchinfo proxy
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_matchinfo'], $_POST['matchinfo_for'])) 

@@ -1,4 +1,5 @@
 <?php
+require_once dirname(__DIR__, 2) . '/functions.php';
 
 $health_ch = curl_init("http://$ip:$port/health");
 curl_setopt($health_ch, CURLOPT_RETURNTRANSFER, true);
