@@ -22,32 +22,6 @@ $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 $error_msg = curl_error($ch);
 curl_close($ch);
 
-// Handle connection error
-if ($response === false) {
-    echo "<p>cURL error: " . htmlspecialchars($error_msg) . "</p>";
-    exit;
-}
-
-if ($http_code >= 400) {
-    echo "<p>API returned HTTP status $http_code</p>";
-}
-
-$data = json_decode($response, true);
-if (!$data) {
-    echo "<p>Failed to decode response.</p>";
-    exit;
-}
-
-if (isset($data['error'])) {
-    echo "<p>Error: " . htmlspecialchars($data['error']) . "</p>";
-    exit;
-}
-
-if (!isset($data['lines'])) {
-    echo "<p>Failed to load logs.</p>";
-    exit;
-}
-
 // Filter buttons
 echo "
     <div style='margin-bottom: 10px;'>
@@ -105,6 +79,32 @@ echo "
                 <button type='submit'>Oldest first</button>
         </form>
     </div>";
+
+// Handle connection error
+if ($response === false) {
+    echo "<p>cURL error: " . htmlspecialchars($error_msg) . "</p>";
+    exit;
+}
+
+if ($http_code >= 400) {
+    echo "<p>API returned HTTP status $http_code</p>";
+}
+
+$data = json_decode($response, true);
+if (!$data) {
+    echo "<p>Failed to decode response.</p>";
+    exit;
+}
+
+if (isset($data['error'])) {
+    echo "<p>Error: " . htmlspecialchars($data['error']) . "</p>";
+    exit;
+}
+
+if (!isset($data['lines'])) {
+    echo "<p>Failed to load logs.</p>";
+    exit;
+}
 
 // Logs output
 echo "<h2>Logs (" . htmlspecialchars($log_type) . ")</h2><pre>";
