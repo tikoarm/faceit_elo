@@ -67,6 +67,10 @@ echo "
             <input type='hidden' name='set_type' value='systemlog'>
             <button type='submit'>System Log</button>
         </form>
+        <form method='POST' action='?subid={$subid}' style='display:inline;'>
+            <input type='hidden' name='set_type' value='matchlogs'>
+            <button type='submit'>Match Logs</button>
+        </form>
     </div>";
 
 
