@@ -1,0 +1,35 @@
+body {
+  font-family: monospace;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+pre {
+  font-family: monospace;
+  font-size: 12px;
+  white-space: pre-wrap;
+  line-height: 0.8;
+}
+
+h2 {
+  font-size: 16px;
+  margin-top: 10px;
+  margin-bottom: 6px;
+}
+
+p,
+form {
+  margin-bottom: 4px;
+}
+
+button {
+  font-size: 11px;
+}
+
+th,
+td {
+  text-align: center;
+  border: 1px solid #ccc;
+  padding: 4px 8px;
+  background: #fff;
+}
