@@ -1,5 +1,13 @@
 <?php
 
+$log_types = [
+    'info' => 'Info',
+    'warning' => 'Warning',
+    'error' => 'Error',
+    'systemlog' => 'System Log',
+    'matchlogs' => 'Match Logs'
+];
+
 if (isset($_GET['type'])) $_SESSION['log_type'] = $_GET['type'];
 $log_type = $_SESSION['log_type'] ?? 'info';
 if (isset($_GET['amount'])) $_SESSION['log_amount'] = $_GET['amount'];
@@ -23,29 +31,16 @@ $error_msg = curl_error($ch);
 curl_close($ch);
 
 // Filter buttons
-echo "
-    <div style='margin-bottom: 10px;'>
+echo "<div style='margin-bottom: 10px;'>";
+foreach ($log_types as $key => $label) {
+    echo "
         <form method='POST' action='?subid={$subid}' style='display:inline;'>
-            <input type='hidden' name='set_type' value='info'>
-            <button type='submit'>Info</button>
+            <input type='hidden' name='set_type' value='{$key}'>
+            <button type='submit'>{$label}</button>
         </form>
-        <form method='POST' action='?subid={$subid}' style='display:inline;'>
-            <input type='hidden' name='set_type' value='warning'>
-                <button type='submit'>Warning</button>
-        </form>
-        <form method='POST' action='?subid={$subid}' style='display:inline;'>
-            <input type='hidden' name='set_type' value='error'>
-            <button type='submit'>Error</button>
-        </form>
-        <form method='POST' action='?subid={$subid}' style='display:inline;'>
-            <input type='hidden' name='set_type' value='systemlog'>
-            <button type='submit'>System Log</button>
-        </form>
-        <form method='POST' action='?subid={$subid}' style='display:inline;'>
-            <input type='hidden' name='set_type' value='matchlogs'>
-            <button type='submit'>Match Logs</button>
-        </form>
-    </div>";
+    ";
+}
+echo "</div>";
 
 
 echo "
@@ -107,7 +102,7 @@ if (!isset($data['lines'])) {
 }
 
 // Logs output
-echo "<h2>Logs (" . htmlspecialchars($log_type) . ")</h2><pre>";
+echo "<h2>Logs (" . ($log_types[$log_type] ?? htmlspecialchars($log_type)) . ")</h2><pre>";
 $lines = $data['lines'];
 if ($order === 'asc') {
     $lines = array_reverse($lines);
