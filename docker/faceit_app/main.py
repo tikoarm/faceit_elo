@@ -3,9 +3,9 @@ import logging
 import time
 from multiprocessing import Process
 
-from telegram import main as telegram
 from database.subservers import load_subservers
 from logic.logger import setup_logger
+from telegram import main as telegram
 from web.api import start_api
 
 setup_logger()

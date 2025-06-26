@@ -67,6 +67,7 @@ async def get_user_name_by_telegramid(telegram_id: int) -> str | None:
         cursor.close()
         conn.close()
 
+
 async def get_telegramid_by_faceitid(faceit_id: int) -> str | None:
     conn = get_connection()
     cursor = conn.cursor()

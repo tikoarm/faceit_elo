@@ -1,10 +1,10 @@
 import logging
 import time
 from datetime import datetime
-from flask import jsonify
-from cache import sub_servers
 
 import requests
+from cache import sub_servers
+from flask import jsonify
 
 
 def format_seconds(seconds: int) -> str:
@@ -92,7 +92,7 @@ def validate_subserver_access(request):
         return None, jsonify({"error": "API Key is required"}), 400
 
     api_key = apikey_param.strip()
-    #client_ip = request.remote_addr
+    # client_ip = request.remote_addr
     client_ip = request.headers.get("X-Forwarded-For", request.remote_addr)
 
     validation_result = sub_servers.is_valid_subserver(client_ip, api_key)
@@ -104,6 +104,10 @@ def validate_subserver_access(request):
 
     subserver_id = sub_servers.get_subserver_id_by_ip_key(client_ip, api_key)
     if not subserver_id:
-        return None, jsonify({"error": "There is an error with your api access"}), 403
+        return (
+            None,
+            jsonify({"error": "There is an error with your api access"}),
+            403,
+        )
 
     return subserver_id, None, None

@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 import time
 from collections import OrderedDict
@@ -21,7 +22,6 @@ from logic.functions import (
     validate_subserver_access,
 )
 from logic.subserver_api.matches import user_finished_match
-import logging
 
 app_start_time = time.time()
 
@@ -37,7 +37,9 @@ app = Flask(__name__)
 
 @app.route("/subservers/check_access", methods=["GET"])
 def check_access_endpoint():
-    subserver_id, error_response, status_code = validate_subserver_access(request)
+    subserver_id, error_response, status_code = validate_subserver_access(
+        request
+    )
     if error_response or not subserver_id:
         return error_response, status_code
 
@@ -53,9 +55,12 @@ def check_access_endpoint():
         mimetype="application/json",
     )
 
+
 @app.route("/subservers/add/match", methods=["GET"])
 def add_match_to_user():
-    subserver_id, error_response, status_code = validate_subserver_access(request)
+    subserver_id, error_response, status_code = validate_subserver_access(
+        request
+    )
     if error_response or not subserver_id:
         return error_response, status_code
 
@@ -88,22 +93,30 @@ def add_match_to_user():
     if missing_params:
         return {
             "error": "Missing required parameters",
-            "missing": missing_params
+            "missing": missing_params,
         }, 400
-    
+
     try:
         elo_before = int(elo_before)
         elo_after = int(elo_after)
     except (TypeError, ValueError):
-        return {
-            "error": "ELO values must be valid integers"
-        }, 400
+        return {"error": "ELO values must be valid integers"}, 400
 
     elo_difference = elo_after - elo_before
     if elo_difference < 1:
-        elo_difference *= -1;
-    
-    success_bd, success_tg, success_mainfunc = user_finished_match(subserver_id, userid, elo_before, elo_after, elo_difference, map_name, win, nickname, gameid)
+        elo_difference *= -1
+
+    success_bd, success_tg, success_mainfunc = user_finished_match(
+        subserver_id,
+        userid,
+        elo_before,
+        elo_after,
+        elo_difference,
+        map_name,
+        win,
+        nickname,
+        gameid,
+    )
 
     response_data = OrderedDict(
         [
@@ -122,7 +135,9 @@ def add_match_to_user():
 
 @app.route("/subservers/get/settings/users", methods=["GET"])
 def get_subservers_users():
-    subserver_id, error_response, status_code = validate_subserver_access(request)
+    subserver_id, error_response, status_code = validate_subserver_access(
+        request
+    )
     if error_response or not subserver_id:
         return error_response, status_code
 
@@ -214,7 +229,6 @@ def add_subserver():
         return jsonify({"error": "Subserver port is required"}), 400
     port = port_param.strip()
 
-
     start_time = time.time()
     client_ip = request.remote_addr
 
@@ -226,7 +240,9 @@ def add_subserver():
         installation = send_apikey_to_subserver(ip, api_key, port)
     except Exception as e:
         installation = False
-        logging.error(f"❌ Ошибка при установке API ключа на субсервер {ip}:{port} — {e}")
+        logging.error(
+            f"❌ Ошибка при установке API ключа на субсервер {ip}:{port} — {e}"
+        )
 
     response_data = OrderedDict(
         [
