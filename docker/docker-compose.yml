@@ -51,5 +51,20 @@ services:
     env_file:
       - .env
 
+  faceit_webanim:
+    build:
+      context: ./faceit_webanim
+      dockerfile: Dockerfile
+    container_name: faceit_webanim
+    ports:
+      - "8895:80"
+    volumes:
+      - ./faceit_webanim:/var/www/html
+    depends_on:
+      - faceit_php
+      - faceit_db
+    env_file:
+      - .env
+
 volumes:
   faceit-db:
