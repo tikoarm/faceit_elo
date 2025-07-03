@@ -101,7 +101,7 @@ $mysqli->close();
                 setTimeout(() => updateELO(elo, eloDiff), time);
             } else {
                 document.getElementById("widget").style.display = "none";
-                document.body.style.background = "#fff";
+                document.body.style.background = "transparent";
             }
         };
 
