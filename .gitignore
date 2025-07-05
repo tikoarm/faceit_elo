@@ -1,4 +1,4 @@
 .DS_Store
 docker/.env
 /logs
-/docker/faceit_webanim/data
+/docker/faceit_webanim/data/*.json

@@ -1,0 +1,1 @@
+This folder stores runtime JSON data and is ignored by Git.
