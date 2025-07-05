@@ -60,6 +60,8 @@ def user_finished_match(
             logging.info(f"POST to: {url}")
             logging.info(f"Payload: {data}")
             response = requests.post(url, data=data, timeout=10)
+            logging.info(f"Response status code: {response.status_code}")
+            logging.info(f"Response text: {response.text}")
 
             if response.status_code == 200:
                 content = response.text.strip().lower()
