@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: faceit_db
--- Время создания: Июн 21 2025 г., 18:44
+-- Время создания: Июл 05 2025 г., 15:04
 -- Версия сервера: 8.0.42
 -- Версия PHP: 8.2.27
 
@@ -51,7 +51,35 @@ INSERT INTO `matches` (`id`, `userid`, `elo_before`, `elo_after`, `elo_differenc
 (11, 3, 2262, 2282, 20, 1, 'de_mirage', 'Bonnaa', '1-ab49615e-6fe0-47e5-9dfe-360441282a60', '2025-06-21 18:44:26'),
 (12, 3, 2282, 2257, 25, 0, 'de_dust2', 'Bonnaa', '1-f3c5131e-5d6c-4d99-9466-f695da282762', '2025-06-21 18:44:26'),
 (13, 4, 3575, 3545, 30, 0, 'de_mirage', 'Qlocuu', '1-b36d27b9-01c4-4d02-8e6c-fd0c53219bf4', '2025-06-21 18:44:26'),
-(14, 3, 2257, 2232, 25, 0, 'de_dust2', 'Bonnaa', '1-a9416747-4c8b-4ea3-8341-819f90a468ad', '2025-06-21 18:44:26');
+(14, 3, 2257, 2232, 25, 0, 'de_dust2', 'Bonnaa', '1-a9416747-4c8b-4ea3-8341-819f90a468ad', '2025-06-21 18:44:26'),
+(15, 4, 958, 982, 24, 1, 'de_anubis', 'Evqalipt', '1-50203dd1-d1f1-4616-a1fa-f28a5f413d2d', '2025-06-22 14:39:57'),
+(16, 4, 961, 939, 22, 0, 'de_anubis', 'Evqalipt', '1-0771f182-7bbb-4422-834a-94834d165c0e', '2025-06-23 17:21:29'),
+(17, 4, 939, 912, 27, 0, 'de_ancient', 'Evqalipt', '1-c6b134f7-9126-4b3d-93da-250f0c2fa4b3', '2025-06-23 19:01:55'),
+(18, 3, 2232, 2254, 22, 1, 'de_dust2', 'Bonnaa', '1-d39b8bc8-b2c5-4058-9edb-7538b32bd9db', '2025-06-23 19:13:29'),
+(19, 3, 2254, 2229, 25, 0, 'de_mirage', 'Bonnaa', '1-3cf11860-5cf2-41a6-bdcb-6cba3d6e062d', '2025-06-23 19:54:08'),
+(20, 4, 912, 886, 26, 0, 'de_ancient', 'Evqalipt', '1-9f88c7d3-49b0-47fc-a5c0-3e93855c955c', '2025-06-24 17:36:58'),
+(21, 4, 886, 858, 28, 0, 'de_mirage', 'Evqalipt', '1-b41a1fce-facc-4332-8e92-e4d422ab5c8b', '2025-06-24 18:16:15'),
+(22, 4, 858, 889, 31, 1, 'de_nuke', 'Evqalipt', '1-2e62f04d-11e0-4727-8761-8d16b28d3f2b', '2025-06-25 18:13:03'),
+(23, 4, 889, 869, 20, 0, 'de_dust2', 'Evqalipt', '1-4249a6d7-b1b4-49b2-9364-7508b9b7e91a', '2025-06-27 18:01:59'),
+(24, 4, 869, 899, 30, 1, 'de_dust2', 'Evqalipt', '1-17b287cc-70df-43e0-b6a6-fba7bf1fb55b', '2025-06-27 18:59:45'),
+(25, 3, 2229, 2211, 18, 0, 'de_mirage', 'Bonnaa', '1-16df7272-d57f-48a0-8ccd-7376b1a999d1', '2025-06-27 21:01:03'),
+(26, 3, 2211, 2187, 24, 0, 'de_dust2', 'Bonnaa', '1-04570fb5-bb0d-47ee-838b-052be55533f3', '2025-06-28 14:58:33'),
+(27, 4, 899, 923, 24, 1, 'de_dust2', 'Evqalipt', '1-efa19848-4aca-454c-9bc0-c86ef394ba65', '2025-06-28 16:25:39'),
+(28, 3, 2187, 2171, 16, 0, 'de_mirage', 'Bonnaa', '1-15023a01-4007-44d4-9c04-670f38dadd34', '2025-06-28 17:44:51'),
+(29, 3, 2171, 2187, 16, 1, 'de_mirage', 'Bonnaa', '1-31d6c7d9-85aa-4b09-90a3-9442cb02c0cb', '2025-06-28 18:32:29'),
+(30, 4, 923, 949, 26, 1, 'de_inferno', 'Evqalipt', '1-1242865e-ca4c-4319-b945-bee963d8cf7d', '2025-06-28 19:03:38'),
+(31, 3, 2187, 2171, 16, 0, 'de_ancient', 'Bonnaa', '1-77ffa2b4-b6f0-4f44-b93b-cecfe6e2e77c', '2025-06-28 19:12:44'),
+(32, 3, 2171, 2146, 25, 0, 'de_anubis', 'Bonnaa', '1-bcc424f3-fda8-4732-85d9-e9a43d20e4df', '2025-06-29 15:20:02'),
+(33, 4, 969, 942, 27, 0, 'de_ancient', 'Evqalipt', '1-1a8e95b8-bf77-41aa-9383-558c98d791f5', '2025-06-29 16:43:16'),
+(34, 4, 942, 914, 28, 0, 'de_mirage', 'Evqalipt', '1-156f8754-dc4d-46f6-9adc-e589c6fbff01', '2025-06-29 21:04:30'),
+(35, 4, 967, 991, 24, 1, 'de_mirage', 'Evqalipt', '1-8be3fb0e-b35f-41b3-aaf7-8ae2457d1c60', '2025-07-01 19:06:15'),
+(36, 4, 991, 1012, 21, 1, 'de_mirage', 'Evqalipt', '1-94310f5d-8b80-472c-88fb-738e837716f5', '2025-07-01 20:07:19'),
+(37, 4, 1012, 982, 30, 0, 'de_anubis', 'Evqalipt', '1-432a8b29-bb67-4e1b-87dd-f2ee503db748', '2025-07-01 21:08:56'),
+(38, 4, 1036, 1010, 26, 0, 'de_mirage', 'Evqalipt', '1-48acb46c-7053-4861-a7eb-cd1154a9e6a4', '2025-07-03 18:00:09'),
+(39, 4, 1010, 988, 22, 0, 'de_mirage', 'Evqalipt', '1-bdd737b9-94f5-4362-8e37-dcbefd75cfef', '2025-07-04 18:01:20'),
+(40, 4, 988, 1018, 30, 1, 'de_mirage', 'Evqalipt', '1-c5209547-8c64-44ab-8450-2518a78cd63b', '2025-07-04 19:51:09'),
+(41, 4, 1018, 994, 24, 0, 'de_mirage', 'Evqalipt', '1-95b9be83-b0bf-4b48-b25b-ef164000a9aa', '2025-07-04 20:31:59'),
+(42, 4, 994, 1015, 21, 1, 'de_inferno', 'Evqalipt', '1-4eefe887-4922-4ed1-ab5a-4c5d61a45635', '2025-07-05 11:01:30');
 
 -- --------------------------------------------------------
 
@@ -112,17 +140,18 @@ CREATE TABLE `users` (
   `sub_end_day` timestamp NOT NULL,
   `faceit_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `faceit_username` varchar(32) NOT NULL,
-  `telegram_id` bigint NOT NULL
+  `telegram_id` bigint NOT NULL,
+  `password` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Дамп данных таблицы `users`
 --
 
-INSERT INTO `users` (`id`, `status`, `subserver_id`, `reg_date`, `sub_start_day`, `sub_end_day`, `faceit_id`, `faceit_username`, `telegram_id`) VALUES
-(2, 1, 10, '2025-05-22 19:23:03', '2025-05-22 19:23:03', '2025-05-22 19:23:03', '53a8d759-076b-4b4a-8101-7b12fa40032d', 'bauld', 251464707),
-(3, 1, 10, '2025-05-22 19:36:29', '2025-05-22 19:36:29', '2025-05-22 19:36:29', '549c61c4-f97d-4e7d-9e5a-32403045a3b4', 'Bonnaa', 251464707),
-(4, 1, 10, '2025-06-15 19:59:57', '2025-06-15 19:59:57', '2025-06-15 19:59:57', '1e01229f-b0d8-4cb1-82f0-6fd7dc362990', 'random', 251464707);
+INSERT INTO `users` (`id`, `status`, `subserver_id`, `reg_date`, `sub_start_day`, `sub_end_day`, `faceit_id`, `faceit_username`, `telegram_id`, `password`) VALUES
+(2, 1, 10, '2025-05-22 19:23:03', '2025-05-22 19:23:03', '2025-05-22 19:23:03', '53a8d759-076b-4b4a-8101-7b12fa40032d', 'bauld', 251464707, '$2y$10$3xPTwgBKOrnHlxyqfsOtquKS3FFFVYfieIbn60SZbhaUV27ZNu8nO'),
+(3, 1, 10, '2025-05-22 19:36:29', '2025-05-22 19:36:29', '2025-05-22 19:36:29', '549c61c4-f97d-4e7d-9e5a-32403045a3b4', 'Bonnaa', 251464707, '$2y$10$3xPTwgBKOrnHlxyqfsOtquKS3FFFVYfieIbn60SZbhaUV27ZNu8nO'),
+(4, 1, 10, '2025-06-15 19:59:57', '2025-06-15 19:59:57', '2025-06-15 19:59:57', 'fd05f47f-df87-47e6-928c-b86c86c0fa65', 'random', 251464707, '$2y$10$3xPTwgBKOrnHlxyqfsOtquKS3FFFVYfieIbn60SZbhaUV27ZNu8nO');
 
 --
 -- Триггеры `users`
@@ -185,7 +214,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `matches`
 --
 ALTER TABLE `matches`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT для таблицы `settings`

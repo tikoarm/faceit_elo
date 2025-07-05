@@ -1,14 +1,16 @@
 import asyncio
 import logging
+import os
+
 import requests
 from database.matches import insert_match
 from database.users import get_telegramid_by_faceitid
-from telegram.main import sendmessage
-import os
 from dotenv import load_dotenv
+from telegram.main import sendmessage
 
 load_dotenv()
 api_admin_key = os.getenv("API_ADMIN_KEY")
+
 
 def user_finished_match(
     subserver_id,
@@ -45,12 +47,12 @@ def user_finished_match(
             gameid,
         )
 
-        url = 'http://faceit_webanim/send_update.php'
+        url = "http://faceit_webanim/send_update.php"
         data = {
-            'faceit_id': userid,
-            'elo': elo_before,
-            'elo_diff': int(elo_after-elo_before),
-            'api_key': api_admin_key
+            "faceit_id": userid,
+            "elo": elo_before,
+            "elo_diff": int(elo_after - elo_before),
+            "api_key": api_admin_key,
         }
         success_animation = False
 
@@ -59,7 +61,7 @@ def user_finished_match(
 
             if response.status_code == 200:
                 content = response.text.strip().lower()
-                if 'authorized' in content or 'success' in content:
+                if "authorized" in content or "success" in content:
                     success_animation = True
                 else:
                     success_animation = False
