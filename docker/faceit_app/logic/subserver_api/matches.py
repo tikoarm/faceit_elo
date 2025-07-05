@@ -57,6 +57,8 @@ def user_finished_match(
         success_animation = False
 
         try:
+            logging.info(f"POST to: {url}")
+            logging.info(f"Payload: {data}")
             response = requests.post(url, data=data, timeout=10)
 
             if response.status_code == 200:
