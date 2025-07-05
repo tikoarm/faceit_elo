@@ -57,15 +57,11 @@ def user_finished_match(
         success_animation = False
 
         try:
-            logging.info(f"POST to: {url}")
-            logging.info(f"Payload: {data}")
             response = requests.post(url, data=data, timeout=10)
-            logging.info(f"Response status code: {response.status_code}")
-            logging.info(f"Response text: {response.text}")
 
             if response.status_code == 200:
                 content = response.text.strip().lower()
-                if "authorized" in content or "success" in content:
+                if "your request was sent" in content:
                     success_animation = True
                 else:
                     success_animation = False
