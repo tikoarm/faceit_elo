@@ -73,6 +73,7 @@ $mysqli->close();
     const time = 3500;
     const evtSource = new EventSource("sse.php?userid=" + userid);
 
+	hideWidget();
     evtSource.onmessage = function(event) {
       if (!event.data || event.data.trim().length < 2) return;
 
