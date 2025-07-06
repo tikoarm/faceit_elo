@@ -10,7 +10,7 @@ services:
       - faceit_db
     ports:
       - "5051:5050"
-    restart: unless-stopped
+    restart: always
 
   faceit_db:
     image: mysql:8.0
@@ -41,6 +41,7 @@ services:
       context: ./faceit_php
       dockerfile: Dockerfile
     container_name: faceit_php
+    restart: always
     ports:
       - "8890:80"
     volumes:
@@ -56,6 +57,7 @@ services:
       context: ./faceit_webanim
       dockerfile: Dockerfile
     container_name: faceit_webanim
+    restart: always
     ports:
       - "8895:80"
     volumes:
