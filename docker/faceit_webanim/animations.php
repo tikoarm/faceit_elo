@@ -69,104 +69,120 @@ $mysqli->close();
 
     <script src="js/jquery.min.js"></script>
     <script>
-        var time = 3500;
+    const userid = <?= $userid ?>;
+    const time = 3500;
+    const evtSource = new EventSource("sse.php?userid=" + userid);
 
-        const userid = <?= $userid ?>;
-        const evtSource = new EventSource("sse.php?userid=" + userid);
-    
-        evtSource.onmessage = function(event) {
-            const raw = event.data;
+    evtSource.onmessage = function(event) {
+      if (!event.data || event.data.trim().length < 2) return;
 
-            if (!raw || raw.trim().length < 2) {
-                console.warn("Пустой или повреждённый event.data:", raw);
-                return;
-            }
+      try {
+        const data = JSON.parse(event.data);
+        const elo = parseInt(data.elo);
+        const eloDiff = parseInt(data.elo_diff || 0);
+        const isShown = data.shown === true || data.shown === "true";
 
-            let data;
-            try {
-                data = JSON.parse(raw);
-            } catch (err) {
-                console.error("Ошибка при парсинге JSON:", raw, err);
-                return;
-            }
+        if (!isShown && !isNaN(eloDiff) && eloDiff !== 0) {
+          $('#widget').css('--start', (time - 300) / 1000 + 's');
+          startAnimation(elo, eloDiff);
+        } else {
+          hideWidget();
+        }
+      } catch (err) {
+        console.error("Invalid JSON:", event.data, err);
+      }
+    };
 
-            const elo = parseInt(data.elo);
-            const eloDiff = parseInt(data.elo_diff || 0);
-            const isShown = data.shown === true || data.shown === "true";
+    function startAnimation(totalelo, diff) {
+      const newElo = Math.max(0, totalelo + diff);
+      const oldLevel = getLevel(totalelo);
+      const newLevel = getLevel(newElo);
 
-            $('#widget').css('--start', (time - 300) / 1000 + 's')
+      const oldColor = getColor(oldLevel);
+      const newColor = getColor(newLevel);
 
-            if (!isShown && !isNaN(eloDiff) && eloDiff !== 0) {
-                updateStats(elo, eloDiff);
-                setTimeout(() => updateELO(elo, eloDiff), time);
-            } else {
-                document.getElementById("widget").style.display = "none";
-                document.body.style.background = "transparent";
-            }
-        };
+      $('#level').html(oldLevel).css({
+        '--color': oldColor,
+        '--p': 75 / 100 * oldLevel * 10,
+        '--a': 0
+      }).removeClass('active').addClass('anim');
 
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        function updateELO(totalelo, amount) {
-		  // Calculate result and update totalelo
-		  let result = totalelo + amount;
-		  if (result < 0) {
-		    result = 0;
-		  }
+      $('#totalelo').html(`<span>${totalelo}</span> ELO`);
+      $('#amount').html((diff > 0 ? '+' : '') + diff + ' ELO').removeClass('green red').addClass(diff > 0 ? 'green' : 'red');
+      $('#widget').fadeIn(150);
 
-		  // Animate totalelo update from current value to result
-		  $("#totalelo span").animate(
-		    {
-		      num: result - totalelo,
-		    },
-		    {
-		      duration: 1000,
-		      step: function (num) {
-		        this.innerHTML = Math.floor(num + totalelo);
-		      },
-		    }
-		  );
+      setTimeout(() => {
+        animateELO(totalelo, diff);
+      }, time);
 
-		  // Hide amount after 2 seconds
-		  setTimeout(function () {
-		    $("#level").addClass('active');
-		  }, 1000);
-		}
-        function updateStats(totalelo, amount) {
-			var newElo = totalelo + amount;
+	  setTimeout(() => {
+	    animateLevelProgress(oldLevel, newLevel, newColor);
+	  }, time + 1600);
 
-			if (newElo < 0) {
-			    newElo = 0;
-			}
+      setTimeout(() => {
+        $('#widget').fadeOut(300);
+        mark_as_shown(userid);
+      }, time + 3600);
+    }
 
-			var oldLevel = getLevel(totalelo);
-			var color = getColor(oldLevel);
+    function animateELO(start, diff) {
+      const end = Math.max(0, start + diff);
+      $("#totalelo span").prop("number", start).animate({
+        number: end
+      }, {
+        duration: 1000,
+        step: function(now) {
+          $(this).text(Math.floor(now));
+        }
+      });
 
-			$('#widget').show();
-			$('#level').html(oldLevel).css({
-				'--color': color,
-				'--p': 75/100 * oldLevel * 10,
-			}).addClass('anim');;
-			$('#totalelo').html(`<span>${totalelo}</span>` + ' ELO');
-			$('#amount').html((amount > 0 ? "+" : "") + amount + ' ELO').addClass(amount > 0 ? "green" : "red");
+      setTimeout(() => {
+        $('#level').addClass('active');
+      }, 1600);
+    }
 
-			setTimeout(function() {
-				var newLevel = getLevel(newElo);
-				var color = getColor(newLevel);
+	function animateLevelProgress(fromLevel, toLevel, color) {
+	  const levelElement = document.getElementById('level');
+	  $('#level').html(toLevel).css('--color', color);
 
-				$('#level').html(newLevel).css({
-					'--color': color,
-					'--a': 75/100 * newLevel * 10
-				}).addClass('active');;
-			}, time + 1000);
+	  const start = 75 / 100 * fromLevel * 10;
+	  const end = 75 / 100 * toLevel * 10;
+	  const duration = 1500;
+	  const startTime = performance.now();
 
-			setTimeout(function() {
-				$('#widget').fadeOut();
-                mark_as_shown(userid);
-			}, time + 3000);
-		}
-        // Функція для визначення рівня за значенням ELO
-		
-    </script>
+	  function animate(time) {
+	    const elapsed = time - startTime;
+	    const progress = Math.min(elapsed / duration, 1);
+	    const easedProgress = easeInOutQuad(progress);
+	    const current = start + (end - start) * easedProgress;
+
+	    levelElement.style.setProperty('--p', current);
+
+	    if (progress < 1) {
+	      requestAnimationFrame(animate);
+	    } else {
+	      // После анимации добавить эффект активного состояния
+	      $('#level').addClass('active');
+	    }
+	  }
+
+	  // Запускаем анимацию
+	  $('#level').removeClass('active').addClass('anim');
+	  requestAnimationFrame(animate);
+	}
+
+
+	function easeInOutQuad(t) {
+	  return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+	}
+
+
+
+    function hideWidget() {
+      document.getElementById("widget").style.display = "none";
+      document.body.style.background = "transparent";
+    }
+  </script>
     <script src="js/faceit.js"></script>
 
 </body>

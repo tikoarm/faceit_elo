@@ -1,5 +1,5 @@
 <?php
-//curl -X POST -d "userid=2&elo=1999&elo_diff=+2&api_key=admin_sk-f32ae769a8b54c0c92e0e08c7d0bd17a" http://localhost:8895/send_update.php
+//curl -X POST -d "faceit_id=b45c1bea-2ff1-4b28-a077-414d8f3bde28&elo=1999&elo_diff=+2&api_key=admin_sk-f32ae769a8b54c0c92e0e08c7d0bd17a" http://localhost:8895/send_update.php
 /*
     C:\Users\kocha>curl -X POST -d "faceit_id=53a8d759-076b-4b4a-8101-7b12fa40032d&elo=1999&elo_diff=+2&api_key=admin_sk-f32ae769a8b54c0c92e0e08c7d0bd17a" http://localhost:8895/send_update.php
     Your request was sent: <br>UserID: 2<br>faceit_id: 53a8d759-076b-4b4a-8101-7b12fa40032d<br>ELO: 1999<br>ELO Difference: 2<br>Timestamp: 1751563351<br>

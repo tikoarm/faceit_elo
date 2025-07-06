@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: faceit_db
--- Время создания: Июл 05 2025 г., 15:04
+-- Время создания: Июл 06 2025 г., 10:23
 -- Версия сервера: 8.0.42
 -- Версия PHP: 8.2.27
 
@@ -79,7 +79,30 @@ INSERT INTO `matches` (`id`, `userid`, `elo_before`, `elo_after`, `elo_differenc
 (39, 4, 1010, 988, 22, 0, 'de_mirage', 'Evqalipt', '1-bdd737b9-94f5-4362-8e37-dcbefd75cfef', '2025-07-04 18:01:20'),
 (40, 4, 988, 1018, 30, 1, 'de_mirage', 'Evqalipt', '1-c5209547-8c64-44ab-8450-2518a78cd63b', '2025-07-04 19:51:09'),
 (41, 4, 1018, 994, 24, 0, 'de_mirage', 'Evqalipt', '1-95b9be83-b0bf-4b48-b25b-ef164000a9aa', '2025-07-04 20:31:59'),
-(42, 4, 994, 1015, 21, 1, 'de_inferno', 'Evqalipt', '1-4eefe887-4922-4ed1-ab5a-4c5d61a45635', '2025-07-05 11:01:30');
+(42, 4, 994, 1015, 21, 1, 'de_inferno', 'Evqalipt', '1-4eefe887-4922-4ed1-ab5a-4c5d61a45635', '2025-07-05 11:01:30'),
+(43, 4, 2654, 2624, 30, 0, 'de_dust2', 'icytears', '1-ee2da94a-0f12-492e-b530-548b050bd67a', '2025-07-05 15:53:48'),
+(44, 4, 1000, 1025, 25, 1, 'de_dust2', 'icytears', 'cs2', '2025-07-05 16:10:32'),
+(45, 4, 1000, 1025, 25, 1, 'de_dust2', 'icytears', 'cs2', '2025-07-05 16:11:11'),
+(46, 4, 1000, 1025, 25, 1, 'de_dust2', 'icytears', 'cs2', '2025-07-05 16:13:43'),
+(47, 4, 1000, 1025, 25, 1, 'de_dust2', 'icytears', 'cs2', '2025-07-05 16:23:01'),
+(48, 4, 1000, 1025, 25, 1, 'de_dust2', 'icytears', 'cs2', '2025-07-05 16:40:36'),
+(49, 4, 1000, 1025, 25, 1, 'de_dust2', 'icytears', 'cs2', '2025-07-05 16:49:14'),
+(50, 4, 1000, 1025, 25, 1, 'de_dust2', 'icytears', 'cs2', '2025-07-05 16:53:12'),
+(51, 4, 1000, 1025, 25, 1, 'de_dust2', 'icytears', 'cs2', '2025-07-05 16:55:30'),
+(52, 4, 1000, 1025, 25, 1, 'de_dust2', 'icytears', 'cs2', '2025-07-05 16:55:40'),
+(53, 4, 1000, 1025, 25, 1, 'de_dust2', 'icytears', 'cs2', '2025-07-05 17:02:33'),
+(54, 4, 1000, 1025, 25, 1, 'de_dust2', 'icytears', 'cs2', '2025-07-05 17:06:35'),
+(55, 4, 1000, 1025, 25, 1, 'de_dust2', 'icytears', 'cs2', '2025-07-05 17:07:02'),
+(56, 4, 1000, 1025, 25, 1, 'de_dust2', 'icytears', 'cs2', '2025-07-05 17:07:20'),
+(57, 4, 1000, 1025, 25, 1, 'de_dust2', 'icytears', 'cs2', '2025-07-05 17:20:02'),
+(58, 4, 2991, 2961, 30, 0, 'de_dust2', 'Recrent', '1-1f2adff6-5821-4c77-b457-88bf153e7971', '2025-07-05 17:34:46'),
+(59, 4, 1000, 1025, 25, 1, 'de_dust2', 'icytears', 'cs2', '2025-07-05 17:42:15'),
+(60, 4, 1000, 1025, 25, 1, 'de_dust2', 'icytears', 'cs2', '2025-07-05 17:42:25'),
+(61, 4, 1000, 1025, 25, 1, 'de_dust2', 'icytears', 'cs2', '2025-07-05 17:43:10'),
+(62, 4, 2845, 2875, 30, 1, 'de_inferno', 'Leha2077', '1-9ac8f390-28fa-4bd7-9294-a78dd8c4e109', '2025-07-05 17:47:16'),
+(63, 4, 2187, 2217, 30, 1, 'de_ancient', 'Rayaner', '1-e5ae76ee-bf58-487e-be65-f75698a17a93', '2025-07-05 18:02:46'),
+(64, 4, 2217, 2246, 29, 1, 'de_dust2', 'Rayaner', '1-c68d1736-98a9-4bd5-99a4-7b463a0ea899', '2025-07-05 18:38:54'),
+(65, 4, 2246, 2274, 28, 1, 'de_inferno', 'Rayaner', '1-17844d44-f688-429b-bc3b-9d428c66c354', '2025-07-05 19:57:12');
 
 -- --------------------------------------------------------
 
@@ -123,7 +146,8 @@ CREATE TABLE `subservers` (
 
 INSERT INTO `subservers` (`id`, `ip`, `port`, `api_key`, `current_user_load`, `creation_date`, `location`) VALUES
 (7, '87.182.31.10', 5055, 'c8e7edb16900f948279b7a2a5b4f93da', 0, '2025-05-22 18:51:43', 'localhost'),
-(10, '148.251.162.18', 5055, '9e5eeeb557a12510616e4168d39c208c', 3, '2025-06-17 00:21:48', 'Germany, Falkenstein');
+(10, '148.251.162.18', 5055, '9e5eeeb557a12510616e4168d39c208c', 3, '2025-06-17 00:21:48', 'Germany, Falkenstein'),
+(11, '93.193.114.112', 5055, 'dfgdfsgdsgds', 0, '2025-07-05 16:09:44', 'localhost pc');
 
 -- --------------------------------------------------------
 
@@ -151,7 +175,7 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `status`, `subserver_id`, `reg_date`, `sub_start_day`, `sub_end_day`, `faceit_id`, `faceit_username`, `telegram_id`, `password`) VALUES
 (2, 1, 10, '2025-05-22 19:23:03', '2025-05-22 19:23:03', '2025-05-22 19:23:03', '53a8d759-076b-4b4a-8101-7b12fa40032d', 'bauld', 251464707, '$2y$10$3xPTwgBKOrnHlxyqfsOtquKS3FFFVYfieIbn60SZbhaUV27ZNu8nO'),
 (3, 1, 10, '2025-05-22 19:36:29', '2025-05-22 19:36:29', '2025-05-22 19:36:29', '549c61c4-f97d-4e7d-9e5a-32403045a3b4', 'Bonnaa', 251464707, '$2y$10$3xPTwgBKOrnHlxyqfsOtquKS3FFFVYfieIbn60SZbhaUV27ZNu8nO'),
-(4, 1, 10, '2025-06-15 19:59:57', '2025-06-15 19:59:57', '2025-06-15 19:59:57', 'fd05f47f-df87-47e6-928c-b86c86c0fa65', 'random', 251464707, '$2y$10$3xPTwgBKOrnHlxyqfsOtquKS3FFFVYfieIbn60SZbhaUV27ZNu8nO');
+(4, 1, 10, '2025-06-15 19:59:57', '2025-06-15 19:59:57', '2025-06-15 19:59:57', 'b45c1bea-2ff1-4b28-a077-414d8f3bde28', 'random', 251464707, '$2y$10$3xPTwgBKOrnHlxyqfsOtquKS3FFFVYfieIbn60SZbhaUV27ZNu8nO');
 
 --
 -- Триггеры `users`
@@ -214,7 +238,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT для таблицы `matches`
 --
 ALTER TABLE `matches`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
 
 --
 -- AUTO_INCREMENT для таблицы `settings`
@@ -226,7 +250,7 @@ ALTER TABLE `settings`
 -- AUTO_INCREMENT для таблицы `subservers`
 --
 ALTER TABLE `subservers`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT для таблицы `users`

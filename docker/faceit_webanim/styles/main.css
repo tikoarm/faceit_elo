@@ -195,13 +195,9 @@ textarea::placeholder {
 }
 
 #level.active {
-  animation: active 1s both;
-}
-
-@keyframes active {
-  to{
-    --p: var(--a)
-  }
+  transition: filter 1s ease-in-out, transform 1s ease-in-out;
+  filter: drop-shadow(0 0 8px var(--color));
+  transform: scale(1.1);
 }
 
 #level:after {
