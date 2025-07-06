@@ -208,3 +208,13 @@ textarea::placeholder {
 #level:before {
   background-size:0 0,auto;
 }
+
+.widget-overlay.win {
+  background: rgba(103, 251, 48, 0.25);
+  backdrop-filter: blur(1px);
+}
+
+.widget-overlay.loss {
+  background: rgba(254, 31, 0, 0.25);
+  backdrop-filter: blur(1px);
+}

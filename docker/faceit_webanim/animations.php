@@ -110,6 +110,13 @@ $mysqli->close();
 
       $('#totalelo').html(`<span>${totalelo}</span> ELO`);
       $('#amount').html((diff > 0 ? '+' : '') + diff + ' ELO').removeClass('green red').addClass(diff > 0 ? 'green' : 'red');
+      const overlay = $('.widget-overlay');
+      overlay.removeClass('win loss');
+      if (diff > 0) {
+        overlay.addClass('win');
+      } else {
+        overlay.addClass('loss');
+      }
       $('#widget').fadeIn(150);
 
       setTimeout(() => {
