@@ -1,6 +1,6 @@
 <body>
     <div id="particles-js"></div>
-    <?php include __DIR__ . '/../../partials/navi.php'; ?>
+    <?php include __DIR__ . '/../../navi.php'; ?>
     <h2>Main Server Settings</h2>
 
     <?php

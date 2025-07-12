@@ -25,8 +25,8 @@ require_once __DIR__ . '/handlers/match_info.php';
 <html lang="en">
 
 <?php
-require_once __DIR__ . '/partials_subserver/head.php';
-require_once __DIR__ . '/partials_subserver/body/body.php';
+require_once __DIR__ . '/partials/subserver/head.php';
+require_once __DIR__ . '/partials/subserver/body/body.php';
 require_once __DIR__ . '/assets/javascript.php';
 require_once __DIR__ . '/handlers/alerts.php';
 ?>

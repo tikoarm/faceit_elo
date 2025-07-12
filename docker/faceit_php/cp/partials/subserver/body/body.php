@@ -1,6 +1,6 @@
 <body>
     <div id="particles-js"></div>
-    <?php include __DIR__ . '/../../partials/navi.php'; ?>
+    <?php include __DIR__ . '/../../navi.php'; ?>
     <h2>Subserver Viewer</h2>
     <form method="POST" action="" id="mainForm">
         <?php if ($authenticated): ?>

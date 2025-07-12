@@ -16,8 +16,8 @@ require_once __DIR__ . '/functions.php';
 <html lang="en">
 
 <?php
-require_once __DIR__ . '/partials_main/head.php';
-require_once __DIR__ . '/partials_main/body/body.php';
+require_once __DIR__ . '/partials/main/head.php';
+require_once __DIR__ . '/partials/main/body/body.php';
 require_once __DIR__ . '/assets/javascript.php';
 require_once __DIR__ . '/handlers/alerts.php';
 ?>
