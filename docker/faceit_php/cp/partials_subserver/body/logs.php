@@ -78,27 +78,28 @@ echo "
 // Handle connection error
 if ($response === false) {
     echo "<p>cURL error: " . htmlspecialchars($error_msg) . "</p>";
-    exit;
+    return;
 }
 
 if ($http_code >= 400) {
     echo "<p>API returned HTTP status $http_code</p>";
+    return;
 }
 
 $data = json_decode($response, true);
 if (!$data) {
     echo "<p>Failed to decode response.</p>";
-    exit;
+   return;
 }
 
 if (isset($data['error'])) {
     echo "<p>Error: " . htmlspecialchars($data['error']) . "</p>";
-    exit;
+    return;
 }
 
 if (!isset($data['lines'])) {
     echo "<p>Failed to load logs.</p>";
-    exit;
+    return;
 }
 
 // Logs output

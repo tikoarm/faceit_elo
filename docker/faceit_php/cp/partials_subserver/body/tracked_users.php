@@ -24,12 +24,12 @@ if ($users_response === false) {
         echo "<table style='border-collapse: collapse; font-size: 12px; margin-bottom: 0;'>";
         echo "
             <tr>
-                <th style='background: #f0f0f0;'>Nickname</th>
-                <th style='background: #f0f0f0;'>ELO</th>
-                <th style='background: #f0f0f0;'>Game ID</th>
-                <th style='background: #f0f0f0;'>Last Game ID</th>
-                <th style='background: #f0f0f0;'>Delay</th>
-                <th style='background: #f0f0f0;'>Action</th>
+                <th style='background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);'>Nickname</th>
+                <th style='background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);'>ELO</th>
+                <th style='background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);'>Game ID</th>
+                <th style='background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);'>Last Game ID</th>
+                <th style='background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);'>Delay</th>
+                <th style='background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);'>Action</th>
             </tr>";
         foreach ($users_data['tracked_users'] ?? [] as $user) {
             $gameid_text = $user['gameid'] ?? null;

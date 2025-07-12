@@ -32,7 +32,7 @@ if ($health_response === false) {
                 $key_index = $i + $j;
                 if ($key_index < count($health_keys)) {
                     $key = $health_keys[$key_index];
-                    echo "<th style='background: #f0f0f0;'>" . htmlspecialchars($key) . "</th>";
+                    echo "<th style='background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);'>" . htmlspecialchars($key) . "</th>";
                 } else {
                     echo "<th></th>";
                 }

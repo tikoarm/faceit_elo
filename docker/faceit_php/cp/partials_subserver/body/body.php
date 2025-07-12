@@ -1,4 +1,5 @@
 <body>
+    <div id="particles-js"></div>
     <h2>Subserver Viewer</h2>
     <form method="POST" action="" id="mainForm">
         <?php if ($authenticated): ?>
@@ -43,4 +44,5 @@
 
     ?>
 </div>
+<script src="assets/particles.js"></script>
 </body>
