@@ -5,8 +5,13 @@ require_once __DIR__ . '/handlers/init_session.php';
 ?>
 
 <?php
-require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/handlers/auth.php';
+if(!$authenticated) {
+    header("Location: /cp/login.php");
+    exit;
+}
+
+require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/handlers/request.php';
 
 require_once __DIR__ . '/config/database.php';
@@ -20,8 +25,8 @@ require_once __DIR__ . '/handlers/match_info.php';
 <html lang="en">
 
 <?php
-require_once __DIR__ . '/partials/head.php';
-require_once __DIR__ . '/partials/body/body.php';
+require_once __DIR__ . '/partials_subserver/head.php';
+require_once __DIR__ . '/partials_subserver/body/body.php';
 require_once __DIR__ . '/assets/javascript.php';
 require_once __DIR__ . '/handlers/alerts.php';
 ?>

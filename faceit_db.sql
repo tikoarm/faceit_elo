@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: faceit_db
--- Время создания: Июл 06 2025 г., 10:23
+-- Время создания: Июл 12 2025 г., 20:20
 -- Версия сервера: 8.0.42
 -- Версия PHP: 8.2.27
 
@@ -20,6 +20,26 @@ SET time_zone = "+00:00";
 --
 -- База данных: `faceit_db`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `cp_users`
+--
+
+CREATE TABLE `cp_users` (
+  `id` int NOT NULL,
+  `username` varchar(32) NOT NULL,
+  `password` varchar(256) NOT NULL,
+  `reg_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Дамп данных таблицы `cp_users`
+--
+
+INSERT INTO `cp_users` (`id`, `username`, `password`, `reg_date`) VALUES
+(1, 'bauld', '$2y$10$r1etxN7q.t/7zKmDAP3l7ukbKuJTt7K3oCKKAgftODDeF7h350H2C', '2025-07-12 20:15:48');
 
 -- --------------------------------------------------------
 
@@ -204,6 +224,12 @@ DELIMITER ;
 --
 
 --
+-- Индексы таблицы `cp_users`
+--
+ALTER TABLE `cp_users`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Индексы таблицы `matches`
 --
 ALTER TABLE `matches`
@@ -233,6 +259,12 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT для сохранённых таблиц
 --
+
+--
+-- AUTO_INCREMENT для таблицы `cp_users`
+--
+ALTER TABLE `cp_users`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT для таблицы `matches`

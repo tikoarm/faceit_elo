@@ -1,14 +1,6 @@
 <body>
     <h2>Subserver Viewer</h2>
-    <?php if (!empty($loginError)): ?>
-        <p style="color:red;"><strong>❌ Incorrect password.</strong></p>
-    <?php endif; ?>
     <form method="POST" action="" id="mainForm">
-        <?php if (!$authenticated): ?>
-            <label for="password">Password: </label>
-            <input type="password" id="password" name="password" value="">
-        <?php endif; ?>
-
         <?php if ($authenticated): ?>
             <label for="subid">Subserver ID: </label>
             <select id="subid" name="subid">

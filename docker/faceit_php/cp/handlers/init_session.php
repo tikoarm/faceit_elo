@@ -2,7 +2,7 @@
 
 if (isset($_GET['logout'])) {
     session_destroy();
-    header("Location: /subserver/index.php");
+    header("Location: /cp/login.php");
     exit;
 }
 if (isset($_POST['subid']) && isset($_POST['submit'])) {
