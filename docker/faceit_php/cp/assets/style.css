@@ -4,6 +4,7 @@ body {
   line-height: 1.4;
   background-color: #0d0d0d;
   color: white;
+  padding-left: 20px;
 }
 
 pre {
