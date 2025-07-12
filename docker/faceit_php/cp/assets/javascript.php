@@ -19,7 +19,9 @@
                 .then(function(text) {
                     Swal.fire({
                         title: 'Match Info',
-                        html: '<pre style="text-align:left; font-family:monospace; font-size:12px; white-space:pre-wrap; line-height: 1.4;">' + text + '</pre>',
+                        html: '<pre style="text-align:left; font-family:monospace; font-size:12px; white-space:pre-wrap; line-height: 1.6; background-color: rgba(30,30,30,0.8); color: #eee; padding: 15px; border-radius: 8px;"><style>pre table { background-color: #1b1b1b; border: 1px solid #444; } pre table td, pre table th { border: 1px solid #555; padding: 4px 6px; }</style>' + text + '</pre>',
+                        background: 'linear-gradient(135deg, #1a1a1a, #2a2a2a)',
+                        color: '#f5f5f5',
                         width: 700
                     });
                 })
@@ -35,11 +37,13 @@
 
     document.getElementById('findUserBtn')?.addEventListener('click', function () {
         Swal.fire({
-            title: 'Enter nickname',
+            title: '<span style="color:#ffd866;">Enter nickname</span>',
             input: 'text',
             inputLabel: 'FACEIT nickname',
             showCancelButton: true,
             confirmButtonText: 'Lookup',
+            background: 'linear-gradient(135deg, #1a1a1a, #2a2a2a)',
+            color: '#f5f5f5',
             preConfirm: (value) => {
                 if (!value) {
                     Swal.showValidationMessage('Please enter a nickname');
@@ -61,7 +65,9 @@
                 .then(text => {
                     Swal.fire({
                         title: 'Faceit ID',
-                        text: text
+                        text: text,
+                        background: 'linear-gradient(135deg, #1a1a1a, #2a2a2a)',
+                        color: '#f5f5f5'
                     });
                 })
                 .catch(err => {

@@ -59,8 +59,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_matchinfo'], $_P
                     if (!empty($response_data['player_stats']) && is_array($response_data['player_stats'])) {
                         $ps = $response_data['player_stats'];
                         $stats_table = "
-<table style='border-collapse: collapse; font-size: 12px; margin-top: 6px;'>
-<tr><th style='border: 1px solid #ccc; background: #f0f0f0;'>Stat</th><th style='border: 1px solid #ccc; background: #f0f0f0;'>Value</th></tr>";
+<div style='background-color: rgba(20, 20, 20, 0.95); color: #f0f0f0; border-radius: 10px; padding: 20px;'>
+<table style='width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 6px; background-color: rgba(20, 20, 20, 0.8); color: #f0f0f0; border-radius: 6px; overflow: hidden;'>
+<tr><th style='background-color: rgba(40, 40, 40, 0.9); padding: 6px; text-align: left;'>Stat</th><th style='background-color: rgba(40, 40, 40, 0.9); padding: 6px; text-align: left;'>Value</th></tr>";
 
                         $stat_map = [
                             'kills' => 'Kills',
@@ -81,10 +82,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_matchinfo'], $_P
 
                         foreach ($stat_map as $key => $label) {
                             $value = isset($ps[$key]) ? $ps[$key] : '-';
-                            $stats_table .= "<tr><td style='border: 1px solid #ccc; padding: 4px 8px;'>$label</td><td style='border: 1px solid #ccc; padding: 4px 8px;'>$value</td></tr>";
+                            $stats_table .= "<tr><td style='border-top: 1px solid #333; padding: 4px 8px;'>$label</td><td style='border-top: 1px solid #333; padding: 4px 8px;'>$value</td></tr>";
                         }
 
-                        $stats_table .= "</table>";
+                        $stats_table .= "</table></div>";
                         $output .= "<strong>📊 Player Stats:</strong>" . $stats_table;
                     }
 
