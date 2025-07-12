@@ -1,5 +1,6 @@
 <body>
     <div id="particles-js"></div>
+    <?php include __DIR__ . '/../../partials/navi.php'; ?>
     <h2>Subserver Viewer</h2>
     <form method="POST" action="" id="mainForm">
         <?php if ($authenticated): ?>
@@ -10,9 +11,6 @@
         <?php endif; ?>
 
         <button type="submit" name="submit">Open</button>
-        <?php if ($authenticated): ?>
-            <a href="?logout=1"><button type="button">Logout</button></a>
-        <?php endif; ?>
     </form>
 
 

@@ -100,3 +100,35 @@ select option {
   background-color: #1a1a1a;
   color: white;
 }
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  background: linear-gradient(135deg, rgba(20, 20, 20, 0.7), rgba(40, 40, 40, 0.7));
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  padding: 12px 24px;
+  border-radius: 12px;
+  margin: 20px auto;
+  max-width: 500px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+nav button {
+  background: linear-gradient(145deg, #2e2e2e, #1a1a1a);
+  color: #e0e0e0;
+  border: 1px solid #555;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 12px;
+  transition: all 0.25s ease-in-out;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+nav button:hover {
+  background: linear-gradient(145deg, #3a3a3a, #222);
+  transform: translateY(-1px);
+}
