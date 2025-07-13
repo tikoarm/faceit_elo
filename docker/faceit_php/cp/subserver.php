@@ -17,7 +17,6 @@ require_once __DIR__ . '/handlers/request.php';
 require_once __DIR__ . '/config/database.php';
 
 require_once __DIR__ . '/handlers/reload_users.php';
-require_once __DIR__ . '/handlers/get_faceit_id.php';
 require_once __DIR__ . '/handlers/match_info.php';
 ?>
 
@@ -27,7 +26,7 @@ require_once __DIR__ . '/handlers/match_info.php';
 <?php
 require_once __DIR__ . '/partials/subserver/head.php';
 require_once __DIR__ . '/partials/subserver/body/body.php';
-require_once __DIR__ . '/assets/javascript.php';
+require_once __DIR__ . '/assets/javascript/subserv_js.php';
 require_once __DIR__ . '/handlers/alerts.php';
 ?>
 

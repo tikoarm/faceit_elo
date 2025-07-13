@@ -6,9 +6,14 @@
     <?php
     if ($authenticated) {
         echo "authed";
+
+        echo "
+            <div style='flex: 0 0 auto;'>
+                <button id=\"findUserBtn\" type=\"button\" style=\"padding: 6px 14px; width: 130px;\">Find User</button>
+            </div>";
     }
 
     ?>
 </div>
-<script src="assets/particles.js"></script>
+<script src="assets/javascript/particles.js"></script>
 </body>

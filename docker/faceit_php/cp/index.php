@@ -10,6 +10,9 @@ if(!$authenticated) {
 }
 
 require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/handlers/active_subserver.php';
+
+require_once __DIR__ . '/handlers/get_faceit_id.php';
 ?>
 
 <!DOCTYPE html>
@@ -18,7 +21,8 @@ require_once __DIR__ . '/functions.php';
 <?php
 require_once __DIR__ . '/partials/main/head.php';
 require_once __DIR__ . '/partials/main/body/body.php';
-require_once __DIR__ . '/assets/javascript.php';
+require_once __DIR__ . '/partials/main/body/active_subserver.php';
+require_once __DIR__ . '/assets/javascript/main_js.php';
 require_once __DIR__ . '/handlers/alerts.php';
 ?>
 

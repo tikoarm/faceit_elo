@@ -48,6 +48,6 @@ if ($authenticated) {
       </div>
     </form>
   </div>
-  <script src="assets/particles.js"></script>
+  <script src="assets/javascript/particles.js"></script>
 </body>
 </html>

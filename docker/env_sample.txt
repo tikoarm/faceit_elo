@@ -8,4 +8,4 @@ MYSQL_DATABASE=your_value_here
 
 API_ADMIN_KEY=your_token_here
 TG_TOKEN=your_token_here
-SUBSERVERS_PASSWORD=your_password_here
+FACEIT_TOKEN=your_token_here
