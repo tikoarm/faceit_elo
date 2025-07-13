@@ -8,7 +8,7 @@ $offset = ($page - 1) * USERS_PER_PAGE;
 $conn = getDatabaseConnection();
 if ($conn) {
     $result = $conn->query("
-        SELECT status, subserver_id, sub_start_day, sub_end_day, faceit_username, password 
+        SELECT status, subserver_id, sub_start_day, sub_end_day, faceit_id, faceit_username, password 
         FROM users 
         ORDER BY (status = 1) DESC, id ASC 
         LIMIT " . USERS_PER_PAGE . " OFFSET $offset
@@ -29,6 +29,7 @@ if ($conn) {
             <th>Sub Start</th>
             <th>Sub End</th>
             <th>Password</th>
+            <th>Extend</th>
         </tr>
     </thead>
     <tbody>
@@ -43,6 +44,19 @@ if ($conn) {
                     <span class="password-field" style="letter-spacing: 2px;">************</span>
                     <span class="real-password" style="display: none;"><?= htmlspecialchars($row['password'] ?? '—') ?></span>
                     <button class="toggle-password" style="background: none; border: none; color: #0ff; cursor: pointer;">👁️</button>
+                </td>
+                <td>
+                    <form method="post" action="/cp/handlers/main/extend_subscription.php" style="display: flex; gap: 6px; align-items: center;">
+                        <input type="hidden" name="faceit_id" value="<?= htmlspecialchars($row['faceit_id'] ?? '') ?>">
+                        <select name="days" style="background: #111; color: #0ff; border: 1px solid #0ff; border-radius: 4px; padding: 2px 6px;">
+                            <option value="1">1d</option>
+                            <option value="7">7d</option>
+                            <option value="14">14d</option>
+                            <option value="21">21d</option>
+                            <option value="31">31d</option>
+                        </select>
+                        <button type="submit" style="background: none; border: none; color: #0f0; cursor: pointer;">➕ Extend</button>
+                    </form>
                 </td>
             </tr>
         <?php endwhile; ?>
