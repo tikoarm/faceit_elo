@@ -60,10 +60,6 @@ if ($users_response === false) {
         echo "</table>";
         // Insert the Find/Update buttons side-by-side, same size, aligned
         echo "<div style='display: flex; gap: 8px; margin-top: 6px; align-items: center;'>";
-        echo "
-            <div style='flex: 0 0 auto;'>
-                <button id=\"findUserBtn\" type=\"button\" style=\"padding: 6px 14px; width: 130px;\">Find User</button>
-            </div>";
         echo "<div style='flex: 0 0 auto;'>
                 <form method='POST' action='?subid={$subid}' style='margin: 0;'>
                     <input type='hidden' name='reloaded' value='1'>
