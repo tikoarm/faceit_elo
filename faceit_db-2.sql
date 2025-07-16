@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: faceit_db
--- Время создания: Июл 12 2025 г., 20:20
+-- Время создания: Июл 16 2025 г., 09:40
 -- Версия сервера: 8.0.42
 -- Версия PHP: 8.2.27
 
@@ -165,9 +165,9 @@ CREATE TABLE `subservers` (
 --
 
 INSERT INTO `subservers` (`id`, `ip`, `port`, `api_key`, `current_user_load`, `creation_date`, `location`) VALUES
-(7, '87.182.31.10', 5055, 'c8e7edb16900f948279b7a2a5b4f93da', 0, '2025-05-22 18:51:43', 'localhost'),
 (10, '148.251.162.18', 5055, '9e5eeeb557a12510616e4168d39c208c', 3, '2025-06-17 00:21:48', 'Germany, Falkenstein'),
-(11, '93.193.114.112', 5055, 'dfgdfsgdsgds', 0, '2025-07-05 16:09:44', 'localhost pc');
+(11, '93.193.114.112', 5055, 'dfgdfsgdsgds', 0, '2025-07-05 16:09:44', 'localhost pc'),
+(13, '87.182.31.10', 5055, 'c8e7edb16900f948279b7a2a5b4f93da', 0, '2025-07-13 11:58:08', 'localhost');
 
 -- --------------------------------------------------------
 
@@ -180,11 +180,11 @@ CREATE TABLE `users` (
   `status` int NOT NULL DEFAULT '0',
   `subserver_id` int DEFAULT NULL,
   `reg_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `sub_start_day` timestamp NOT NULL,
-  `sub_end_day` timestamp NOT NULL,
+  `sub_start_day` timestamp NULL DEFAULT NULL,
+  `sub_end_day` timestamp NULL DEFAULT NULL,
   `faceit_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `faceit_username` varchar(32) NOT NULL,
-  `telegram_id` bigint NOT NULL,
+  `faceit_username` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'unknown',
+  `telegram_id` bigint NOT NULL DEFAULT '0',
   `password` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -193,9 +193,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `status`, `subserver_id`, `reg_date`, `sub_start_day`, `sub_end_day`, `faceit_id`, `faceit_username`, `telegram_id`, `password`) VALUES
-(2, 1, 10, '2025-05-22 19:23:03', '2025-05-22 19:23:03', '2025-05-22 19:23:03', '53a8d759-076b-4b4a-8101-7b12fa40032d', 'bauld', 251464707, '$2y$10$3xPTwgBKOrnHlxyqfsOtquKS3FFFVYfieIbn60SZbhaUV27ZNu8nO'),
-(3, 1, 10, '2025-05-22 19:36:29', '2025-05-22 19:36:29', '2025-05-22 19:36:29', '549c61c4-f97d-4e7d-9e5a-32403045a3b4', 'Bonnaa', 251464707, '$2y$10$3xPTwgBKOrnHlxyqfsOtquKS3FFFVYfieIbn60SZbhaUV27ZNu8nO'),
-(4, 1, 10, '2025-06-15 19:59:57', '2025-06-15 19:59:57', '2025-06-15 19:59:57', 'b45c1bea-2ff1-4b28-a077-414d8f3bde28', 'random', 251464707, '$2y$10$3xPTwgBKOrnHlxyqfsOtquKS3FFFVYfieIbn60SZbhaUV27ZNu8nO');
+(2, 1, 10, '2025-05-22 19:23:03', '2025-05-22 19:23:03', '2025-05-23 19:23:03', '53a8d759-076b-4b4a-8101-7b12fa40032d', 'bauld', 251464707, '123123'),
+(3, 1, 10, '2025-05-22 19:36:29', '2025-05-22 19:36:29', '2025-05-22 19:36:29', '549c61c4-f97d-4e7d-9e5a-32403045a3b4', 'Bonnaa', 251464707, '123123'),
+(4, 1, 10, '2025-06-15 19:59:57', '2025-06-15 19:59:57', '2025-06-15 19:59:57', 'b45c1bea-2ff1-4b28-a077-414d8f3bde28', 'random', 251464707, '123123'),
+(14, 1, NULL, '2025-07-13 14:34:03', '2025-07-13 14:58:11', '2025-07-14 14:58:11', 'e15b7956-1216-4922-ac27-30150982719b', '-Kyson-', 0, '877b0af318d8ca7e5a56'),
+(15, 1, NULL, '2025-07-13 14:36:40', '2024-07-14 14:55:12', '2025-09-18 14:55:12', '928857e9-48e7-41b1-b4e8-217fd1a6e51b', 'electronic', 0, 'd361c420dce16b56b91c');
 
 --
 -- Триггеры `users`
@@ -254,6 +256,7 @@ ALTER TABLE `subservers`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `faceit_id` (`faceit_id`),
   ADD KEY `subserver_id` (`subserver_id`);
 
 --
@@ -282,13 +285,13 @@ ALTER TABLE `settings`
 -- AUTO_INCREMENT для таблицы `subservers`
 --
 ALTER TABLE `subservers`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц
