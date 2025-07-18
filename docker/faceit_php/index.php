@@ -1,6 +1,6 @@
 <?php
 // Localization setup
-$lang = in_array($_GET['lang'] ?? '', ['ru', 'en', 'de']) ? $_GET['lang'] : 'ru';
+$lang = in_array($_GET['lang'] ?? '', ['ru', 'en', 'de']) ? $_GET['lang'] : 'en';
 // Localized strings
 // Localized strings
 $T = [
