@@ -1,4 +1,5 @@
 COMPOSE_PROJECT_NAME=faceit_elo
+SERVER_IP=8.8.8.8
 
 MYSQL_HOST=your_value_here
 MYSQL_PORT=3306

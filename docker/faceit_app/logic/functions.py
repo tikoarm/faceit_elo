@@ -1,10 +1,16 @@
+import ipaddress
 import logging
+import os
 import time
 from datetime import datetime
 
 import requests
 from cache import sub_servers
+from dotenv import load_dotenv
 from flask import jsonify
+
+load_dotenv()
+server_ip = os.getenv("SERVER_IP", "127.0.0.1")
 
 
 def format_seconds(seconds: int) -> str:
@@ -94,6 +100,8 @@ def validate_subserver_access(request):
     api_key = apikey_param.strip()
     # client_ip = request.remote_addr
     client_ip = request.headers.get("X-Forwarded-For", request.remote_addr)
+    if is_docker_internal_ip(client_ip):
+        client_ip = server_ip
 
     validation_result = sub_servers.is_valid_subserver(client_ip, api_key)
     if validation_result is False:
@@ -111,3 +119,28 @@ def validate_subserver_access(request):
         )
 
     return subserver_id, None, None
+
+
+def is_docker_internal_ip(ip: str) -> bool:
+    try:
+        ip_obj = ipaddress.ip_address(ip)
+        docker_networks = [
+            ipaddress.ip_network("172.17.0.0/16"),
+            ipaddress.ip_network("172.18.0.0/16"),
+            ipaddress.ip_network("172.19.0.0/16"),
+            ipaddress.ip_network("172.20.0.0/16"),
+            ipaddress.ip_network("172.21.0.0/16"),
+            ipaddress.ip_network("172.22.0.0/16"),
+            ipaddress.ip_network("172.23.0.0/16"),
+            ipaddress.ip_network("172.24.0.0/16"),
+            ipaddress.ip_network("172.25.0.0/16"),
+            ipaddress.ip_network("172.26.0.0/16"),
+            ipaddress.ip_network("172.27.0.0/16"),
+            ipaddress.ip_network("172.28.0.0/16"),
+            ipaddress.ip_network("172.29.0.0/16"),
+            ipaddress.ip_network("172.30.0.0/16"),
+            ipaddress.ip_network("172.31.0.0/16"),
+        ]
+        return any(ip_obj in net for net in docker_networks)
+    except ValueError:
+        return False  # Невалидный IP

@@ -25,6 +25,7 @@ require_once __DIR__ . '/partials/main/body/body.php';
 require_once __DIR__ . '/partials/main/body/active_subserver.php';
 require_once __DIR__ . '/partials/main/body/right_navi.php';
 require_once __DIR__ . '/partials/main/body/user_list.php';
+require_once __DIR__ . '/partials/main/body/health.php';
 require_once __DIR__ . '/assets/javascript/main_js.php';
 require_once __DIR__ . '/handlers/alerts.php';
 ?>
