@@ -84,8 +84,7 @@ function unlinkFaceitUser(string $faceit_id): bool {
                 Swal.fire({
                     icon: 'success',
                     title: 'Пользователь успешно отвязан',
-                    showConfirmButton: false,
-                    timer: 1500
+                    showConfirmButton: false
                 });
             });
         </script>";

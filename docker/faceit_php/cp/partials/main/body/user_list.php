@@ -30,13 +30,14 @@ if ($conn) {
             <th>Sub End</th>
             <th>Password</th>
             <th>Extend</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
         <?php while ($row = $result->fetch_assoc()): ?>
             <tr>
                 <td><?= htmlspecialchars($row['faceit_username'] ?? '—') ?></td>
-                <td><?= htmlspecialchars($row['subserver_id'] ?? '—') ?></td>
+                <td style="<?= empty($row['subserver_id']) ? 'color: #b9f2ff; font-weight: bold;' : '' ?>"><?= empty($row['subserver_id']) ? 'No' : htmlspecialchars($row['subserver_id']) ?></td>
                 <td style="color: <?= ($row['status'] ?? null) === '1' ? '#0f0' : '#b9f2ff'; ?>; font-weight: bold;">
                     <?= ($row['status'] ?? null) === '1' ? 'Active' : 'Inactive' ?>
                 </td>
@@ -58,6 +59,14 @@ if ($conn) {
                             <option value="31">31d</option>
                         </select>
                         <button type="submit" style="background: none; border: none; color: #0f0; cursor: pointer;">➕ Extend</button>
+                    </form>
+                </td>
+                <td>
+                    <form method="post" action="/cp/handlers/main/cancel_subscription.php" style="display: flex; gap: 6px; align-items: center;">
+                        <input type="hidden" name="faceit_id" value="<?= htmlspecialchars($row['faceit_id'] ?? '') ?>">
+                        <button type="submit" style="background-color: #e74c3c; color: #fff; border: none; border-radius: 4px; padding: 6px 12px; cursor: pointer; font-weight: bold; transition: background-color 0.2s;">
+                            Unsubscribe
+                        </button>
                     </form>
                 </td>
             </tr>

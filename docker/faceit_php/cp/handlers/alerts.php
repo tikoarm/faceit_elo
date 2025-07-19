@@ -27,8 +27,7 @@ if (isset($_SESSION['just_unlinked'])) {
             title: 'User unlinked successfully',
             toast: true,
             position: 'top-end',
-            showConfirmButton: false,
-            timer: 2000
+            showConfirmButton: false
         });
     </script>";
     unset($_SESSION['just_unlinked']);
@@ -44,9 +43,7 @@ if(isset($_SESSION['extended_successfully']))
         background: '#222',
         color: '#fff',
         confirmButtonColor: '#4CAF50',
-        confirmButtonText: 'OK',
-        timer: 10000,
-        timerProgressBar: true
+        confirmButtonText: 'OK'
     });
 </script>";
 
@@ -54,5 +51,23 @@ if(isset($_SESSION['extended_successfully']))
     unset($_SESSION['extended_user']);
     unset($_SESSION['extended_days']);
     unset($_SESSION['extended_enddate']);
+}
+
+if(isset($_SESSION['unsubscribed_successfully']))
+{
+    echo "<script>
+    Swal.fire({
+        icon: 'success',
+        title: '<span style=\"color:#fff; font-family:monospace\">🙅‍♂️ Subscription Cancelled</span>',
+        html: '<div style=\"font-size:14px; color:#cfc; font-family:monospace\">You have successfully cancelled the subscription for user <strong style=\"color:#8cf\">" . htmlspecialchars($_SESSION['unsubscribed_user']) . "</strong>.</div>',
+        background: '#222',
+        color: '#fff',
+        confirmButtonColor: '#4CAF50',
+        confirmButtonText: 'OK'
+    });
+</script>";
+
+    unset($_SESSION['unsubscribed_successfully']);
+    unset($_SESSION['unsubscribed_user']);
 }
 ?>
