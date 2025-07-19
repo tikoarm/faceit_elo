@@ -9,6 +9,9 @@
     <div style="flex: 0 0 auto;">
       <button id="createUserBtn" type="button" style="padding: 6px 14px; width: 130px;">Create User</button>
     </div>
+    <div style="flex: 0 0 auto;">
+      <button id="optimizeSubservers" type="button" style="padding: 6px 14px; width: 130px;">Optimize subservers</button>
+    </div>
 
 
   </div>

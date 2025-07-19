@@ -14,6 +14,7 @@ require_once __DIR__ . '/handlers/active_subserver.php';
 
 require_once __DIR__ . '/handlers/main/get_faceit_id.php';
 require_once __DIR__ . '/handlers/main/create_account.php';
+require_once __DIR__ . '/handlers/main/optimize_subservers.php';
 ?>
 
 <!DOCTYPE html>

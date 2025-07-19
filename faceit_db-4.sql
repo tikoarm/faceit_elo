@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: faceit_db
--- Время создания: Июл 19 2025 г., 11:00
+-- Время создания: Июл 19 2025 г., 19:16
 -- Версия сервера: 8.0.42
 -- Версия PHP: 8.2.27
 
@@ -168,7 +168,7 @@ INSERT INTO `subservers` (`id`, `ip`, `port`, `api_key`, `current_user_load`, `c
 (10, '148.251.162.18', 5055, '9e5eeeb557a12510616e4168d39c208c', 0, '2025-06-17 00:21:48', 'Germany, Falkenstein'),
 (11, '93.193.114.112', 5055, 'dfgdfsgdsgds', 0, '2025-07-05 16:09:44', 'localhost pc'),
 (13, '87.182.31.10', 5055, 'c8e7edb16900f948279b7a2a5b4f93da', 0, '2025-07-13 11:58:08', 'localhost'),
-(14, '167.86.98.193', 5055, '5c13f7d4a1293be3a9e612f4d7b1c25f', 3, '2025-07-18 18:01:54', 'Localhost VPS');
+(14, '167.86.98.193', 5055, '5c13f7d4a1293be3a9e612f4d7b1c25f', 4, '2025-07-18 18:01:54', 'Localhost VPS');
 
 -- --------------------------------------------------------
 
@@ -196,15 +196,27 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `status`, `subserver_id`, `reg_date`, `sub_start_day`, `sub_end_day`, `faceit_id`, `faceit_username`, `telegram_id`, `password`) VALUES
 (2, 1, 14, '2025-05-22 19:23:03', '2025-05-22 19:23:03', '2025-05-23 19:23:03', '53a8d759-076b-4b4a-8101-7b12fa40032d', 'bauld', 251464707, '123123'),
 (3, 1, 14, '2025-05-22 19:36:29', '2025-05-22 19:36:29', '2025-05-22 19:36:29', '549c61c4-f97d-4e7d-9e5a-32403045a3b4', 'Bonnaa', 251464707, '123123'),
-(4, 1, 14, '2025-06-15 19:59:57', '2025-06-15 19:59:57', '2025-06-15 19:59:57', 'b45c1bea-2ff1-4b28-a077-414d8f3bde28', 'random', 251464707, '123123'),
-(14, 1, NULL, '2025-07-13 14:34:03', '2025-07-13 14:58:11', '2025-07-14 14:58:11', 'e15b7956-1216-4922-ac27-30150982719b', '-Kyson-', 0, '877b0af318d8ca7e5a56'),
-(15, 1, NULL, '2025-07-13 14:36:40', '2024-07-14 14:55:12', '2025-09-18 14:55:12', '928857e9-48e7-41b1-b4e8-217fd1a6e51b', 'electronic', 0, 'd361c420dce16b56b91c');
+(4, 0, 14, '2025-06-15 19:59:57', '2025-06-15 19:59:57', '2025-06-15 19:59:57', 'b45c1bea-2ff1-4b28-a077-414d8f3bde28', 'random', 251464707, '123123'),
+(14, 0, 14, '2025-07-13 14:34:03', '2025-07-13 14:58:11', '2025-07-14 14:58:11', 'e15b7956-1216-4922-ac27-30150982719b', '-Kyson-', 0, '877b0af318d8ca7e5a56'),
+(15, 0, NULL, '2025-07-13 14:36:40', NULL, NULL, '928857e9-48e7-41b1-b4e8-217fd1a6e51b', 'electronic', 0, 'd361c420dce16b56b91c'),
+(16, 0, NULL, '2025-07-19 18:40:43', NULL, NULL, 'ac71ba3c-d3d4-45e7-8be2-26aa3986867d', 's1s1', 0, '27500271250e80cc6c32');
 
 --
 -- Триггеры `users`
 --
 DELIMITER $$
-CREATE TRIGGER `update_user_load` BEFORE UPDATE ON `users` FOR EACH ROW BEGIN
+CREATE TRIGGER `trg_users_reset_subscription` BEFORE UPDATE ON `users` FOR EACH ROW BEGIN
+  -- Если статус меняется на 0
+  IF NEW.status = 0 AND OLD.status <> 0 THEN
+    SET NEW.sub_start_day = NULL,
+        NEW.sub_end_day   = NULL,
+        NEW.subserver_id  = NULL;
+  END IF;
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `update_user_load` AFTER UPDATE ON `users` FOR EACH ROW BEGIN
     -- Уменьшаем загрузку на старом сабсервере
     IF OLD.subserver_id IS NOT NULL THEN
         UPDATE subservers
@@ -292,7 +304,7 @@ ALTER TABLE `subservers`
 -- AUTO_INCREMENT для таблицы `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц

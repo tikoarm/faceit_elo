@@ -37,7 +37,9 @@ if ($conn) {
             <tr>
                 <td><?= htmlspecialchars($row['faceit_username'] ?? '—') ?></td>
                 <td><?= htmlspecialchars($row['subserver_id'] ?? '—') ?></td>
-                <td><?= ($row['status'] ?? null) === '1' ? 'Active' : 'Inactive' ?></td>
+                <td style="color: <?= ($row['status'] ?? null) === '1' ? '#0f0' : '#b9f2ff'; ?>; font-weight: bold;">
+                    <?= ($row['status'] ?? null) === '1' ? 'Active' : 'Inactive' ?>
+                </td>
                 <td><?= htmlspecialchars($row['sub_start_day'] ?? '—') ?></td>
                 <td><?= htmlspecialchars($row['sub_end_day'] ?? '—') ?></td>
                 <td style="align-items: center; gap: 6px;">
