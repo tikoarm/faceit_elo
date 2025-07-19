@@ -4,10 +4,10 @@
     <h2>Main Server Settings</h2>
 
     <?php
-    
-    if ($authenticated) {
-        echo "welcome back";
-    }
+    require_once __DIR__ . '/active_subserver.php';
+    require_once __DIR__ . '/right_navi.php';
+    require_once __DIR__ . '/health.php';
+    require_once __DIR__ . '/user_list.php';
 
     ?>
 
