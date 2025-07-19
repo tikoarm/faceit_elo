@@ -34,8 +34,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_matchinfo'], $_P
                     echo "[CURL] ❌ Ошибка: " . ($response_data['message'] ?? 'Нет сообщения об ошибке') . "\n";
                 } 
                 elseif ($status === 'ONGOING') 
-                {
-                    echo "[CURL] 🔄 Матч в процессе\n";
+                {   
+                    $output = "Внимание! 🔄 Матч в процессе! 🔄\n\n";
+                    $output .= "👤 Player: <strong><a href='https://www.faceit.com/en/players/" . ($response_data['nickname'] ?? '-') . "' target='_blank' rel='noopener noreferrer'>" . ($response_data['nickname'] ?? '-') . "</a></strong>\n";
+                    if($response_data['match_id']) {
+                        $output .= "🆔 Match ID: <strong><a href='https://www.faceit.com/ru/cs2/room/" . ($response_data['match_id'] ?? '-') . "' target='_blank' rel='noopener noreferrer'>" .    ($response_data['match_id'] ?? '-') . "</a></strong>\n";
+                    } else $output .= "🆔 Match ID: <strong>-</strong>\n";
+
+                    $output .= "🌍 Location: <strong>" . ($response_data['location'] ?? '-') . "</strong>\n";
+                    $output .= "🏆 Queue: <strong>" . ($response_data['competition_name'] ?? '-') . "</strong>\n";
+                    $output .= "📍 Map: <strong>" . ($response_data['map'] ?? '-') . "</strong>\n";
+                    $output .= "🔢 Score: <strong>" . ($response_data['ongoing_score'] ?? '-') . "</strong>\n";
+                    echo $output;
                 } 
                 elseif ($status === 'FINISHED') 
                 {
