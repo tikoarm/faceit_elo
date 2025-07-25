@@ -49,11 +49,6 @@ $T = [
         'en'=>'The sub-server runs as an independent service, querying the FACEIT API for assigned users, processing finished matches, and synchronizing results with the main server.',
         'de'=>'Der Sub-Server läuft als eigenständiger Dienst, der die FACEIT API für zugewiesene Benutzer abfragt, abgeschlossene Matches verarbeitet und die Ergebnisse mit dem Hauptserver synchronisiert.'
     ],
-    'subserver_endpoints_header' => [
-        'ru'=>'Эндпоинты саб-сервера',
-        'en'=>'Sub-server Endpoints',
-        'de'=>'Sub-Server-Endpunkte'
-    ],
     'install_note' => [
         'ru'=>'Установка через эндпоинт <code>/install</code> используется при первом подключении саб-сервера. Основной сервер передаёт два параметра: временный <code>token</code> и постоянный <code>api_key</code>.',
         'en'=>'Installation via the <code>/install</code> endpoint is used on first connection. The main server sends a temporary <code>token</code> and a persistent <code>api_key</code>.',
@@ -511,7 +506,7 @@ $T = [
     <h2><?= $T['subserver_header'][$lang] ?></h2>
     <p><?= $T['subserver_desc'][$lang] ?></p>
 
-    <h3><?= $T['subserver_endpoints_header'][$lang] ?></h3>
+    <h3><?= $T['api_endpoints_header'][$lang] ?></h3>
     <table>
         <tr>
             <th><?= $T['endpoint_table_headers'][$lang][0] ?></th>
