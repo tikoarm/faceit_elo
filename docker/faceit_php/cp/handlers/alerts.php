@@ -70,4 +70,22 @@ if(isset($_SESSION['unsubscribed_successfully']))
     unset($_SESSION['unsubscribed_successfully']);
     unset($_SESSION['unsubscribed_user']);
 }
+
+if(isset($_SESSION['account_deleted_successfully']))
+{
+    echo "<script>
+    Swal.fire({
+        icon: 'success',
+        title: '<span style=\"color:#fff; font-family:monospace\">Account successfully deleted</span>',
+        html: '<div style=\"font-size:14px; color:#cfc; font-family:monospace\">The account for user <strong style=\"color:#8cf\">" . htmlspecialchars($_SESSION['account_deleted_user']) . "</strong> has been successfully deleted.</div>',
+        background: '#222',
+        color: '#fff',
+        confirmButtonColor: '#4CAF50',
+        confirmButtonText: 'OK'
+    });
+</script>";
+
+    unset($_SESSION['account_deleted_successfully']);
+    unset($_SESSION['account_deleted_user']);
+}
 ?>

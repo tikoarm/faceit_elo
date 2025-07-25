@@ -62,12 +62,20 @@ if ($conn) {
                     </form>
                 </td>
                 <td>
-                    <form method="post" action="/cp/handlers/main/cancel_subscription.php" style="display: flex; gap: 6px; align-items: center;">
-                        <input type="hidden" name="faceit_id" value="<?= htmlspecialchars($row['faceit_id'] ?? '') ?>">
-                        <button type="submit" style="background-color: #e74c3c; color: #fff; border: none; border-radius: 4px; padding: 6px 12px; cursor: pointer; font-weight: bold; transition: background-color 0.2s;">
-                            Unsubscribe
-                        </button>
-                    </form>
+                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                        <form method="post" action="/cp/handlers/main/cancel_subscription.php">
+                            <input type="hidden" name="faceit_id" value="<?= htmlspecialchars($row['faceit_id'] ?? '') ?>">
+                            <button type="submit" style="background-color: #e74c3c; color: #fff; border: none; border-radius: 4px; padding: 6px 12px; cursor: pointer; font-weight: bold; transition: background-color 0.2s;">
+                                Unsubscribe
+                            </button>
+                        </form>
+                        <form method="post" action="/cp/handlers/main/delete_account.php">
+                            <input type="hidden" name="faceit_id" value="<?= htmlspecialchars($row['faceit_id'] ?? '') ?>">
+                            <button type="submit" style="background-color: #e74c3c; color: #fff; border: none; border-radius: 4px; padding: 6px 12px; cursor: pointer; font-weight: bold; transition: background-color 0.2s;">
+                                Delete Account
+                            </button>
+                        </form>
+                    </div>
                 </td>
             </tr>
         <?php endwhile; ?>

@@ -80,9 +80,9 @@ $T = [
         'de'=>'Web-Oberfläche'
     ],
     'webui_link_text' => [
-        'ru'=>'Интерфейс просмотра логов саб-серверов',
-        'en'=>'Sub-server Logs Interface',
-        'de'=>'Interface zur Anzeige von Sub-Server-Logs'
+        'ru'=>'Панель управления саб-серверами и глобальными настройками',
+        'en'=>'Sub-server and Global Settings Control Panel',
+        'de'=>'Sub-Server- und globale Einstellungssteuerung'
     ],
     'webui_pass_note' => [
         'ru'=>'Доступ защищён паролем (учётные данные по запросу у разработчика).',
@@ -140,22 +140,6 @@ $T = [
       'en' => 'Checks the current status of the main server: availability, uptime, and database connectivity.',
       'de' => 'Überprüft den aktuellen Status des Hauptservers: Verfügbarkeit, Laufzeit und Datenbankverbindung.'
     ],
-    // --- Саб-сервер endpoints list ---
-    'ss_health' => [
-      'ru'=>'<code>GET /health</code> — проверка состояния саб-сервера',
-      'en'=>'<code>GET /health</code> — checks sub-server status',
-      'de'=>'<code>GET /health</code> — prüft den Status des Sub-Servers'
-    ],
-    'ss_logs'   => [
-      'ru'=>'<code>GET /logs/view</code> — просмотр логов локального исполнения',
-      'en'=>'<code>GET /logs/view</code> — view sub-server logs',
-      'de'=>'<code>GET /logs/view</code> — zeigt Sub-Server-Logs an'
-    ],
-    'ss_install'=> [
-      'ru'=>'<code>POST /install</code> — установка и регистрация саб-сервера',
-      'en'=>'<code>POST /install</code> — install and register sub-server',
-      'de'=>'<code>POST /install</code> — Installation und Registrierung des Sub-Servers'
-    ],
     // Database section translations
     'db_users_label' => [
         'ru'=>'список всех пользователей',
@@ -177,6 +161,11 @@ $T = [
         'en'=>'list of match logs',
         'de'=>'Liste der Spielprotokolle'
     ],
+    'db_cpusers_label' => [
+        'ru'=>'список пользователей панели управления',
+        'en'=>'list of control panel users',
+        'de'=>'Liste der Benutzer des Kontrollpanels'
+    ],
     'db_users_summary' => [
         'ru'=>'Показать структуру таблицы <code>users</code>',
         'en'=>'Show structure of <code>users</code> table',
@@ -197,6 +186,11 @@ $T = [
         'en'=>'Show structure of <code>matches</code> table',
         'de'=>'Struktur der Tabelle <code>matches</code> anzeigen'
     ],
+    'db_cpusers_summary' => [
+        'ru'=>'Показать структуру таблицы <code>cp_users</code>',
+        'en'=>'Show structure of <code>cp_users</code> table',
+        'de'=>'Struktur der Tabelle <code>cp_users</code> anzeigen'
+    ],
     // Field definitions for Database tables
     'db_users_fields' => [
         'ru' => '<ul>
@@ -209,6 +203,7 @@ $T = [
             <li><code>faceit_id</code> — идентификатор пользователя на платформе FACEIT</li>
             <li><code>faceit_username</code> — имя пользователя на FACEIT</li>
             <li><code>telegram_id</code> — Telegram ID для уведомлений</li>
+            <li><code>password</code> — Пароль, необходимый для доступа к веб-виджету.</li>
         </ul>',
         'en' => '<ul>
             <li><code>id</code> — unique record identifier</li>
@@ -220,6 +215,7 @@ $T = [
             <li><code>faceit_id</code> — user’s FACEIT platform ID</li>
             <li><code>faceit_username</code> — user’s name on FACEIT</li>
             <li><code>telegram_id</code> — Telegram ID for notifications</li>
+            <li><code>password</code> — Password required to access the web widget.</li>
         </ul>',
         'de' => '<ul>
             <li><code>id</code> — eindeutiger Datensatzbezeichner</li>
@@ -231,6 +227,7 @@ $T = [
             <li><code>faceit_id</code> — ID des Nutzers auf der FACEIT-Plattform</li>
             <li><code>faceit_username</code> — Nutzername auf FACEIT</li>
             <li><code>telegram_id</code> — Telegram-ID für Benachrichtigungen</li>
+            <li><code>password</code> — Passwort für den Zugriff auf das Web-Widget.</li>
         </ul>'
     ],
     'db_subservers_fields' => [
@@ -316,6 +313,67 @@ $T = [
             <li><code>nickname</code> — Spieler-Spitzname zum Zeitpunkt des Matches</li>
             <li><code>gameid</code> — Match-Kennung auf FACEIT</li>
         </ul>'
+    ],
+    'db_cpusers_fields' => [
+        'ru' => '<ul>
+            <li><code>id</code> — уникальный идентификатор записи</li>
+            <li><code>username</code> — имя пользователя</li>
+            <li><code>password</code> — пароль от аккаунта</li>
+            <li><code>reg_date</code> — дата регистрации</li>
+        </ul>',
+        'en' => '<ul>
+            <li><code>id</code> — Unique record identifier</li>
+            <li><code>username</code> — User’s nickname</li>
+            <li><code>password</code> — Account password</li>
+            <li><code>reg_date</code> — Registration date</li>
+        </ul>',
+        'de' => '<ul>
+            <li><code>id</code> — eindeutiger Datensatzbezeichner</li>
+            <li><code>username</code> — Benutzername</li>
+            <li><code>password</code> — Kontopasswort</li>
+            <li><code>reg_date</code> — Registrierungsdatum</li>
+        </ul>'
+    ],
+    // --- Саб-сервер endpoints list ---
+    'subserver_check_access' => [
+        'ru'=>'Проверяет API-ключ и возвращает статус доступа, аптайм, время и версию.',
+        'en'=>'Checks API key validity and returns access status, uptime, timestamp, and version.',
+        'de'=>'Prüft den API-Schlüssel und gibt Zugriffsstatus, Laufzeit, Zeitstempel und Version zurück.'
+    ],
+    'subserver_get_facetid' => [
+        'ru'=>'Возвращает FACEIT ID игрока по нику после проверки API-ключа.',
+        'en'=>'Returns the FACEIT player ID by nickname after validating the API key.',
+        'de'=>'Gibt die FACEIT-Spieler-ID anhand des Nicknamens zurück, nach API-Schlüssel-Überprüfung.'
+    ],
+    'subserver_get_matchinfo' => [
+        'ru'=>'Возвращает подробную статистику матча по match_id и user_id с платформы FACEIT, включая личные и командные показатели, информацию о матче и счёт при активной игре. Требуется действительный API-ключ.',
+        'en'=>'Returns detailed match statistics for a given match_id and user_id from FACEIT, including personal and team stats, match info, and ongoing score if the match is live. Requires valid API key.',
+        'de'=>'Liefert detaillierte Match-Statistiken für match_id und user_id von FACEIT, einschließlich Spieler- und Teamdaten, Match-Infos und aktuellem Spielstand bei laufendem Match. Gültiger API-Schlüssel erforderlich.'
+    ],
+    'ss_health' => [
+      'ru'=>'Возвращает последние строки из указанного лог-файла (log_type) в количестве amount, скрывая чувствительные данные.',
+      'en'=>'Returns the last amount of lines from a specified log file (log_type), with sensitive data masked.',
+      'de'=>'Gibt die letzten Zeilen (amount) einer angegebenen Logdatei (log_type) zurück, wobei sensible Daten maskiert werden.'
+    ],
+    'ss_logs'   => [
+      'ru'=>'Возвращает указанное количество последних строк из выбранного лог-файла (error, warning, info, systemlog или matchlogs). Чувствительные данные из окружения маскируются. Требуется действующий api_key.',
+      'en'=>'Returns a specified number of recent lines from a selected log file (error, warning, info, systemlog, or matchlogs). Sensitive values from the environment are masked. Requires a valid api_key.',
+      'de'=>'Gibt eine angegebene Anzahl der letzten Zeilen aus einer ausgewählten Logdatei zurück (error, warning, info, systemlog oder matchlogs). Sensible Umgebungswerte werden maskiert. Gültiger api_key erforderlich.'
+    ],
+    'ss_install'=> [
+      'ru'=>'Устанавливает новый API-ключ при передаче действительного token и api_key через параметры запроса (POST). Обновляет конфигурацию окружения и активирует доступ.',
+      'en'=>'Sets a new API key by sending a valid token and api_key as query parameters via POST. Updates environment config and enables access.',
+      'de'=>'Setzt einen neuen API-Schlüssel über einen gültigen token und api_key als Query-Parameter per POST. Aktualisiert die Umgebungsvariable und aktiviert den Zugriff.'
+    ],
+    'ss_user_trackinfo'=> [
+      'ru'=>'Возвращает список всех отслеживаемых пользователей, включая никнейм, Faceit ID, ELO, ID матчей, задержку и время добавления. Требуется действительный api_key.',
+      'en'=>'Returns a list of all currently tracked users, including nickname, Faceit ID, ELO, game IDs, delay, and time added. Requires a valid api_key.',
+      'de'=>'Gibt eine Liste aller aktuell verfolgten Benutzer zurück – inklusive Nickname, Faceit-ID, ELO, Spiel-IDs, Verzögerung und Zeitpunkt der Hinzufügung. Gültiger api_key erforderlich.'
+    ],
+    'ss_user_reload'=> [
+      'ru'=>'Инициирует обновление списка отслеживаемых пользователей, запрашивая актуальные данные с основного сервера. Используется сабсервером для синхронизации списка. Требуется действующий api_key.',
+      'en'=>'Initiates a reload of the tracked user list by requesting updated data from the main server. This endpoint is used by the subserver to synchronize its user tracking list. Requires a valid api_key.',
+      'de'=>'Initiiert das Neuladen der Liste der verfolgten Benutzer, indem aktualisierte Daten vom Hauptserver abgerufen werden. Wird vom Subserver zur Synchronisierung der Benutzerdaten verwendet. Gültiger api_key erforderlich.'
     ],
 ];
 ?>
@@ -454,17 +512,61 @@ $T = [
     <p><?= $T['subserver_desc'][$lang] ?></p>
 
     <h3><?= $T['subserver_endpoints_header'][$lang] ?></h3>
-    <ul>
-        <li><?= $T['ss_health'][$lang] ?></li>
-        <li><?= $T['ss_logs'][$lang] ?></li>
-        <li><?= $T['ss_install'][$lang] ?></li>
-    </ul>
+    <table>
+        <tr>
+            <th><?= $T['endpoint_table_headers'][$lang][0] ?></th>
+            <th><?= $T['endpoint_table_headers'][$lang][1] ?></th>
+            <th><?= $T['endpoint_table_headers'][$lang][2] ?></th>
+        </tr>
+        <tr>
+            <td><code class="endpoint">GET /check_access</code></td>
+            <td><code>api_key</code>*</td>
+            <td><?= $T['subserver_check_access'][$lang] ?></td>
+        </tr>
+        <tr>
+            <td><code class="endpoint">GET /get_faceit_id</code></td>
+            <td><code>api_key</code>*, <code>nickname</code></td>
+            <td><?= $T['subserver_get_facetid'][$lang] ?></td>
+        </tr>
+        <tr>
+            <td><code class="endpoint">GET /matchinfo</code></td>
+            <td><code>api_key</code>*, <code>match_id</code>, <code>user_id</code></td>
+            <td><?= $T['subserver_get_matchinfo'][$lang] ?></td>
+        </tr>
+        <tr>
+            <td><code class="endpoint">POST /install</code></td>
+            <td><code>api_key</code>*, <code>api_key</code></td>
+            <td><?= $T['ss_install'][$lang] ?></td>
+        </tr>
+        <tr>
+            <td><code class="endpoint">GET /logs/view</code></td>
+            <td><code>api_key</code>*, <code>log_type</code>, <code>amount</code></td>
+            <td><?= $T['ss_logs'][$lang] ?></td>
+        </tr>
+        <tr>
+            <td><code class="endpoint">GET /health</code></td>
+            <td>-</td>
+            <td><?= $T['ss_health'][$lang] ?></td>
+        </tr>
+        <tr>
+            <td><code class="endpoint">GET /users/trackinfo</code></td>
+            <td><code>api_key</code>*</td>
+            <td><?= $T['ss_user_trackinfo'][$lang] ?></td>
+        </tr>
+        <tr>
+            <td><code class="endpoint">POST /users/reload</code></td>
+            <td><code>api_key</code>*</td>
+            <td><?= $T['ss_user_reload'][$lang] ?></td>
+        </tr>
+    </table>
 
-    <p><?= $T['install_note'][$lang] ?></p>
-
-    <p><?= $T['token_note'][$lang] ?></p>
-
-    <p><?= $T['api_key_usage'][$lang] ?></p>
+    <p>
+    <?= $T['install_note'][$lang] ?>
+        <br>
+    <?= $T['token_note'][$lang] ?>
+        <br>
+    <?= $T['api_key_usage'][$lang] ?>
+    </p>
 
     <h2><?= $T['db_header'][$lang] ?></h2>
     <ul>
@@ -496,10 +598,17 @@ $T = [
           <?= $T['db_matches_fields'][$lang] ?>
         </details>
       </li>
+      <li>
+        <code>cp_users</code> — <?= $T['db_cpusers_label'][$lang] ?>
+        <details>
+          <summary><?= $T['db_cpusers_summary'][$lang] ?></summary>
+          <?= $T['db_cpusers_fields'][$lang] ?>
+        </details>
+      </li>
     </ul>
 
     <h2><?= $T['webui_header'][$lang] ?></h2>
-    <p><a href="cp/subserver.php"><?= $T['webui_link_text'][$lang] ?></a><br>
+    <p><a href="cp/index.php" target="_blank"><?= $T['webui_link_text'][$lang] ?></a><br>
     <?= $T['webui_pass_note'][$lang] ?></p>
 
     <div class="author">
