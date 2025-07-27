@@ -69,21 +69,6 @@ $T = [
         'en'=>'Database',
         'de'=>'Datenbank'
     ],
-    'webui_header' => [
-        'ru'=>'Веб-интерфейс',
-        'en'=>'Web Interface',
-        'de'=>'Web-Oberfläche'
-    ],
-    'webui_link_text' => [
-        'ru'=>'Панель управления саб-серверами и глобальными настройками',
-        'en'=>'Sub-server and Global Settings Control Panel',
-        'de'=>'Sub-Server- und globale Einstellungssteuerung'
-    ],
-    'webui_pass_note' => [
-        'ru'=>'Доступ защищён паролем (учётные данные по запросу у разработчика).',
-        'en'=>'Access is password-protected (credentials available on request).',
-        'de'=>'Der Zugriff ist passwortgeschützt (Anmeldedaten auf Anfrage verfügbar).'
-    ],
     'author_info' => [
         'ru' => 'Тигран Кочаров (<a href="https://github.com/tikoarm" target="_blank">tikoarm</a>) | Нюрнберг, Германия | <a href="mailto:tiko.nue@icloud.com">tiko.nue@icloud.com</a>',
         'en' => 'Tigran Kocharov (<a href="https://github.com/tikoarm" target="_blank">tikoarm</a>) | Nuremberg, Germany | <a href="mailto:tiko.nue@icloud.com">tiko.nue@icloud.com</a>',
@@ -601,10 +586,6 @@ $T = [
         </details>
       </li>
     </ul>
-
-    <h2><?= $T['webui_header'][$lang] ?></h2>
-    <p><a href="cp/index.php" target="_blank"><?= $T['webui_link_text'][$lang] ?></a><br>
-    <?= $T['webui_pass_note'][$lang] ?></p>
 
     <div class="author">
       <p><?= $T['author_info'][$lang] ?></p>
