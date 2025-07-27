@@ -90,9 +90,9 @@ $T = [
         'de' => 'Tigran Kocharov (<a href="https://github.com/tikoarm" target="_blank">tikoarm</a>) | Nürnberg, Deutschland | <a href="mailto:tiko.nue@icloud.com">tiko.nue@icloud.com</a>'
     ],
     'author_note' => [
-        'ru'=>'Проект разработан для коммерческого использования. Исходный код раскрывается по запросу HR или технического отдела.',
-        'en'=>'This project is for commercial use. Source code disclosure is available upon request by HR or the technical department.',
-        'de'=>'Dieses Projekt ist für kommerzielle Zwecke konzipiert. Der Quellcode wird auf Anfrage von HR oder der technischen Abteilung offengelegt.'
+        'ru' => 'Проект разработан для возможного коммерческого использования. Исходный код временно открыт.',
+        'en' => 'This project is designed for potential commercial use. The source code is temporarily open.',
+        'de' => 'Dieses Projekt ist für mögliche kommerzielle Nutzung entwickelt. Der Quellcode ist vorübergehend öffentlich zugänglich.'
     ],
     // --- API endpoint descriptions ---
     'desc_check_access' => [
